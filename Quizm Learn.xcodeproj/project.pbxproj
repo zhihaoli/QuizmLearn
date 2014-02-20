@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		2A0DACDC18A2F6DC00FF995D /* QuizTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A0DACDB18A2F6DC00FF995D /* QuizTableViewController.m */; };
+		2A2C62EB18B672AF00FD5052 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A2C62EA18B672AF00FD5052 /* Parse.framework */; };
+		2A2C62EE18B674B000FD5052 /* Quiz.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A2C62ED18B674B000FD5052 /* Quiz.m */; };
 		2A99664218AAF2B800192BD7 /* navBarColor.png in Resources */ = {isa = PBXBuildFile; fileRef = 2A99664118AAF2B800192BD7 /* navBarColor.png */; };
 		2AA82FE818A5879600FCC137 /* groupResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AA82FE718A5879600FCC137 /* groupResultViewController.m */; };
 		2AA8300E18A590D200FCC137 /* 0.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AA8300518A590D200FCC137 /* 0.png */; };
@@ -50,9 +52,7 @@
 		2AFF21B6189C7ACC00FE6F38 /* iosBlueStarIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AFF21B3189C7ACC00FE6F38 /* iosBlueStarIcon.png */; };
 		2AFF21B7189C7ACC00FE6F38 /* ok-512.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AFF21B4189C7ACC00FE6F38 /* ok-512.png */; };
 		2AFF21B8189C7ACC00FE6F38 /* redX7.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AFF21B5189C7ACC00FE6F38 /* redX7.png */; };
-		A720766618B2D21500EC4267 /* Quiz.m in Sources */ = {isa = PBXBuildFile; fileRef = A720766518B2D21500EC4267 /* Quiz.m */; };
 		A720766918B303A500EC4267 /* PastQuizTable.m in Sources */ = {isa = PBXBuildFile; fileRef = A720766818B303A500EC4267 /* PastQuizTable.m */; };
-		A726B52B18AC46B4000AB0D7 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A726B52A18AC46B4000AB0D7 /* Parse.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +69,9 @@
 		2A0DACD918A2F2E600FF995D /* QuestionSelectionDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QuestionSelectionDelegate.h; sourceTree = "<group>"; };
 		2A0DACDA18A2F6DC00FF995D /* QuizTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuizTableViewController.h; sourceTree = "<group>"; };
 		2A0DACDB18A2F6DC00FF995D /* QuizTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuizTableViewController.m; sourceTree = "<group>"; };
+		2A2C62EA18B672AF00FD5052 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = ../../apsciOSDev/cisQuizApp2/Parse.framework; sourceTree = "<group>"; };
+		2A2C62EC18B674B000FD5052 /* Quiz.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Quiz.h; sourceTree = "<group>"; };
+		2A2C62ED18B674B000FD5052 /* Quiz.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Quiz.m; sourceTree = "<group>"; };
 		2A99664118AAF2B800192BD7 /* navBarColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = navBarColor.png; path = Images.xcassets/navBarColor.png; sourceTree = "<group>"; };
 		2AA82FE618A5879600FCC137 /* groupResultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = groupResultViewController.h; sourceTree = "<group>"; };
 		2AA82FE718A5879600FCC137 /* groupResultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = groupResultViewController.m; sourceTree = "<group>"; };
@@ -83,7 +86,7 @@
 		2AA8300D18A590D200FCC137 /* zerofillStar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = zerofillStar.png; path = Images.xcassets/zerofillStar.png; sourceTree = "<group>"; };
 		2AB1DCF618A3F97A00E5E08B /* PastQuizViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PastQuizViewController.h; sourceTree = "<group>"; };
 		2AB1DCF718A3F97A00E5E08B /* PastQuizViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PastQuizViewController.m; sourceTree = "<group>"; };
-		2AD87A251897225B0069F479 /* QuizApp2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuizApp2.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2AD87A251897225B0069F479 /* Quizm Learn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Quizm Learn.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2AD87A281897225B0069F479 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2AD87A2A1897225B0069F479 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		2AD87A2C1897225B0069F479 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -123,11 +126,8 @@
 		2AFF21B3189C7ACC00FE6F38 /* iosBlueStarIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iosBlueStarIcon.png; path = Images.xcassets/iosBlueStarIcon.png; sourceTree = "<group>"; };
 		2AFF21B4189C7ACC00FE6F38 /* ok-512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ok-512.png"; path = "Images.xcassets/ok-512.png"; sourceTree = "<group>"; };
 		2AFF21B5189C7ACC00FE6F38 /* redX7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = redX7.png; path = Images.xcassets/redX7.png; sourceTree = "<group>"; };
-		A720766418B2D21500EC4267 /* Quiz.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Quiz.h; path = ../../../Quizm/QuizApp2/Quiz.h; sourceTree = "<group>"; };
-		A720766518B2D21500EC4267 /* Quiz.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Quiz.m; path = ../../../Quizm/QuizApp2/Quiz.m; sourceTree = "<group>"; };
 		A720766718B303A500EC4267 /* PastQuizTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PastQuizTable.h; sourceTree = "<group>"; };
 		A720766818B303A500EC4267 /* PastQuizTable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PastQuizTable.m; sourceTree = "<group>"; };
-		A726B52A18AC46B4000AB0D7 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = ../Parse.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,7 +141,7 @@
 				2AD87A8E189735C00069F479 /* libz.dylib in Frameworks */,
 				2AD87A8F189735C00069F479 /* MobileCoreServices.framework in Frameworks */,
 				2AD87A90189735C00069F479 /* QuartzCore.framework in Frameworks */,
-				A726B52B18AC46B4000AB0D7 /* Parse.framework in Frameworks */,
+				2A2C62EB18B672AF00FD5052 /* Parse.framework in Frameworks */,
 				2AD87A91189735C00069F479 /* Security.framework in Frameworks */,
 				2AD87A92189735C00069F479 /* StoreKit.framework in Frameworks */,
 				2AD87A93189735C00069F479 /* SystemConfiguration.framework in Frameworks */,
@@ -177,7 +177,7 @@
 		2AD87A261897225B0069F479 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2AD87A251897225B0069F479 /* QuizApp2.app */,
+				2AD87A251897225B0069F479 /* Quizm Learn.app */,
 				2AD87A461897225B0069F479 /* QuizApp2Tests.xctest */,
 			);
 			name = Products;
@@ -186,7 +186,7 @@
 		2AD87A271897225B0069F479 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A726B52A18AC46B4000AB0D7 /* Parse.framework */,
+				2A2C62EA18B672AF00FD5052 /* Parse.framework */,
 				2AD87A94189735EF0069F479 /* AudioToolbox.framework */,
 				2AD87A82189735BF0069F479 /* AudioUnit.framework */,
 				2AD87A83189735BF0069F479 /* CFNetwork.framework */,
@@ -292,10 +292,10 @@
 		2AF3767E189C174F004423BA /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				A720766418B2D21500EC4267 /* Quiz.h */,
-				A720766518B2D21500EC4267 /* Quiz.m */,
 				2AD87A691897271A0069F479 /* Question.h */,
 				2AD87A6A1897271A0069F479 /* Question.m */,
+				2A2C62EC18B674B000FD5052 /* Quiz.h */,
+				2A2C62ED18B674B000FD5052 /* Quiz.m */,
 				2AD87A66189726E90069F479 /* NSString+ParsingExtensions.h */,
 				2AD87A67189726E90069F479 /* NSString+ParsingExtensions.m */,
 				A720766718B303A500EC4267 /* PastQuizTable.h */,
@@ -321,7 +321,7 @@
 			);
 			name = QuizApp2;
 			productName = QuizApp2;
-			productReference = 2AD87A251897225B0069F479 /* QuizApp2.app */;
+			productReference = 2AD87A251897225B0069F479 /* Quizm Learn.app */;
 			productType = "com.apple.product-type.application";
 		};
 		2AD87A451897225B0069F479 /* QuizApp2Tests */ = {
@@ -356,7 +356,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 2AD87A201897225B0069F479 /* Build configuration list for PBXProject "QuizApp2-7" */;
+			buildConfigurationList = 2AD87A201897225B0069F479 /* Build configuration list for PBXProject "Quizm Learn" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -419,12 +419,12 @@
 				2AD87AB21898801D0069F479 /* QuestionViewController.m in Sources */,
 				2AD87AAF189867750069F479 /* QuizViewController.m in Sources */,
 				2AD87A6B1897271A0069F479 /* Question.m in Sources */,
-				A720766618B2D21500EC4267 /* Quiz.m in Sources */,
 				2A0DACDC18A2F6DC00FF995D /* QuizTableViewController.m in Sources */,
 				2AB1DCF818A3F97A00E5E08B /* PastQuizViewController.m in Sources */,
 				2AF37676189AF53C004423BA /* ImportViewController.m in Sources */,
 				2AD87A391897225B0069F479 /* AppDelegate.m in Sources */,
 				2AD87A351897225B0069F479 /* main.m in Sources */,
+				2A2C62EE18B674B000FD5052 /* Quiz.m in Sources */,
 				A720766918B303A500EC4267 /* PastQuizTable.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -554,15 +554,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/bruce_li_94/Documents/apsciOSDev/QuizApp2,
 					/Users/cisdev2/Downloads,
+					/Users/bruce_li_94/Documents/apsciOSDev/cisQuizApp2,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QuizApp2/QuizApp2-Prefix.pch";
 				INFOPLIST_FILE = "QuizApp2/QuizApp2-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Quizm Learn";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -572,15 +574,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/bruce_li_94/Documents/apsciOSDev/QuizApp2,
 					/Users/cisdev2/Downloads,
+					/Users/bruce_li_94/Documents/apsciOSDev/cisQuizApp2,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QuizApp2/QuizApp2-Prefix.pch";
 				INFOPLIST_FILE = "QuizApp2/QuizApp2-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Quizm Learn";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -630,7 +634,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2AD87A201897225B0069F479 /* Build configuration list for PBXProject "QuizApp2-7" */ = {
+		2AD87A201897225B0069F479 /* Build configuration list for PBXProject "Quizm Learn" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2AD87A551897225B0069F479 /* Debug */,
