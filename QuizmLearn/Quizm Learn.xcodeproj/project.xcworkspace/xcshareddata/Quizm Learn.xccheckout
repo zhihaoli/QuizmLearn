@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>2816C0A8-C66E-4D97-A33B-49EA325A28B8</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Quizm Learn</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>B132E06B-CF9A-4E3B-A472-25D1B837FAB5</key>
+		<string>https://github.com/zhihaoli/QuizmLearn.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>QuizmLearn/Quizm Learn.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>B132E06B-CF9A-4E3B-A472-25D1B837FAB5</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/zhihaoli/QuizmLearn.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>B132E06B-CF9A-4E3B-A472-25D1B837FAB5</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>B132E06B-CF9A-4E3B-A472-25D1B837FAB5</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Quizm_Learn</string>
+		</dict>
+	</array>
+</dict>
+</plist>
