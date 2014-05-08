@@ -35,7 +35,6 @@
 		2A8F02C518EA31BE0077C265 /* reportC.png in Resources */ = {isa = PBXBuildFile; fileRef = 2A8F02C218EA31BE0077C265 /* reportC.png */; };
 		2A8F02C618EA31BE0077C265 /* reportD.png in Resources */ = {isa = PBXBuildFile; fileRef = 2A8F02C318EA31BE0077C265 /* reportD.png */; };
 		2A99664218AAF2B800192BD7 /* navBarColor.png in Resources */ = {isa = PBXBuildFile; fileRef = 2A99664118AAF2B800192BD7 /* navBarColor.png */; };
-		2AA82FE818A5879600FCC137 /* groupResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AA82FE718A5879600FCC137 /* groupResultViewController.m */; };
 		2AA8301318A590D200FCC137 /* quizappicon1-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AA8300A18A590D200FCC137 /* quizappicon1-2.png */; };
 		2AA8301418A590D200FCC137 /* quizappicon1-2HQ.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AA8300B18A590D200FCC137 /* quizappicon1-2HQ.png */; };
 		2AA8301518A590D200FCC137 /* zeroattemptstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AA8300C18A590D200FCC137 /* zeroattemptstar.png */; };
@@ -111,7 +110,6 @@
 		2AD87A92189735C00069F479 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AD87A89189735C00069F479 /* StoreKit.framework */; };
 		2AD87A93189735C00069F479 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AD87A8A189735C00069F479 /* SystemConfiguration.framework */; };
 		2AD87A95189735EF0069F479 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AD87A94189735EF0069F479 /* AudioToolbox.framework */; };
-		2AD87AAF189867750069F479 /* QuizViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AD87AAE189867750069F479 /* QuizViewController.m */; };
 		2AD87AB21898801D0069F479 /* QuestionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AD87AB11898801D0069F479 /* QuestionViewController.m */; };
 		2AF37676189AF53C004423BA /* ImportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AF37675189AF53C004423BA /* ImportViewController.m */; };
 		2AF53C60191AFADF00825D3A /* downArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AF53C5E191AFADF00825D3A /* downArrow.png */; };
@@ -172,8 +170,6 @@
 		2A8F02C218EA31BE0077C265 /* reportC.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reportC.png; sourceTree = "<group>"; };
 		2A8F02C318EA31BE0077C265 /* reportD.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reportD.png; sourceTree = "<group>"; };
 		2A99664118AAF2B800192BD7 /* navBarColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = navBarColor.png; path = Images.xcassets/navBarColor.png; sourceTree = "<group>"; };
-		2AA82FE618A5879600FCC137 /* groupResultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = groupResultViewController.h; sourceTree = "<group>"; };
-		2AA82FE718A5879600FCC137 /* groupResultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = groupResultViewController.m; sourceTree = "<group>"; };
 		2AA8300A18A590D200FCC137 /* quizappicon1-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "quizappicon1-2.png"; path = "Images.xcassets/quizappicon1-2.png"; sourceTree = "<group>"; };
 		2AA8300B18A590D200FCC137 /* quizappicon1-2HQ.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "quizappicon1-2HQ.png"; path = "Images.xcassets/quizappicon1-2HQ.png"; sourceTree = "<group>"; };
 		2AA8300C18A590D200FCC137 /* zeroattemptstar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = zeroattemptstar.png; path = Images.xcassets/zeroattemptstar.png; sourceTree = "<group>"; };
@@ -259,8 +255,6 @@
 		2AD87A89189735C00069F479 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		2AD87A8A189735C00069F479 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		2AD87A94189735EF0069F479 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		2AD87AAD189867750069F479 /* QuizViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuizViewController.h; sourceTree = "<group>"; };
-		2AD87AAE189867750069F479 /* QuizViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuizViewController.m; sourceTree = "<group>"; };
 		2AD87AB01898801D0069F479 /* QuestionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuestionViewController.h; sourceTree = "<group>"; };
 		2AD87AB11898801D0069F479 /* QuestionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuestionViewController.m; sourceTree = "<group>"; };
 		2AF37674189AF53C004423BA /* ImportViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImportViewController.h; sourceTree = "<group>"; };
@@ -312,6 +306,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2A2DA7A8191BE96B002989F8 /* Open Source */ = {
+			isa = PBXGroup;
+			children = (
+				2A3725DD18FC8D3B003D7E15 /* AFKPageFlipper.h */,
+				2A3725DE18FC8D3B003D7E15 /* AFKPageFlipper.m */,
+				2A8F02BC18EA12AD0077C265 /* ILTranslucentView.h */,
+				2A8F02BD18EA12AD0077C265 /* ILTranslucentView.m */,
+				2A3725E018FC9B71003D7E15 /* AnimationDelegate.h */,
+				2A3725E118FC9B71003D7E15 /* AnimationDelegate.m */,
+				2A3725E218FC9B71003D7E15 /* AnimationFrame.h */,
+				2A3725E318FC9B71003D7E15 /* AnimationFrame.m */,
+				2A3725E418FC9B71003D7E15 /* FlipView.h */,
+				2A3725E518FC9B71003D7E15 /* FlipView.m */,
+				2A3725E618FC9B71003D7E15 /* GenericAnimationView.h */,
+				2A3725E718FC9B71003D7E15 /* GenericAnimationView.m */,
+			);
+			name = "Open Source";
+			sourceTree = "<group>";
+		};
 		2AD87A1C1897225B0069F479 = {
 			isa = PBXGroup;
 			children = (
@@ -358,14 +371,7 @@
 			children = (
 				2AD87A371897225B0069F479 /* AppDelegate.h */,
 				2AD87A381897225B0069F479 /* AppDelegate.m */,
-				2AD36D591912C4E400D71555 /* Reachability.h */,
-				2AD36D5A1912C4E400D71555 /* Reachability.m */,
 				2AD87A3A1897225B0069F479 /* Main.storyboard */,
-				2AD7CF6418E62E1A002B2246 /* OtherQuizzesTableViewController.h */,
-				2AD7CF6518E62E1A002B2246 /* OtherQuizzesTableViewController.m */,
-				2AA82FE618A5879600FCC137 /* groupResultViewController.h */,
-				2AA82FE718A5879600FCC137 /* groupResultViewController.m */,
-				2A0DACD918A2F2E600FF995D /* QuestionSelectionDelegate.h */,
 				2AF3767E189C174F004423BA /* Model */,
 				2AF3767D189C1740004423BA /* View Controllers */,
 				2AD87AAC189866020069F479 /* UI Images */,
@@ -378,8 +384,6 @@
 		2AD87A2F1897225B0069F479 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				2AD87AAD189867750069F479 /* QuizViewController.h */,
-				2AD87AAE189867750069F479 /* QuizViewController.m */,
 				2AD87A301897225B0069F479 /* QuizApp2-Info.plist */,
 				2AD87A311897225B0069F479 /* InfoPlist.strings */,
 				2AD87A341897225B0069F479 /* main.m */,
@@ -490,6 +494,8 @@
 			children = (
 				2AB1DCF618A3F97A00E5E08B /* PastQuizViewController.h */,
 				2AB1DCF718A3F97A00E5E08B /* PastQuizViewController.m */,
+				2AD7CF6418E62E1A002B2246 /* OtherQuizzesTableViewController.h */,
+				2AD7CF6518E62E1A002B2246 /* OtherQuizzesTableViewController.m */,
 				2A0DACDA18A2F6DC00FF995D /* QuizTableViewController.h */,
 				2A0DACDB18A2F6DC00FF995D /* QuizTableViewController.m */,
 				2AF37674189AF53C004423BA /* ImportViewController.h */,
@@ -511,22 +517,14 @@
 				2A85A10718B6D331002722E5 /* Quiz.m */,
 				2AD87A691897271A0069F479 /* Question.h */,
 				2AD87A6A1897271A0069F479 /* Question.m */,
+				2A0DACD918A2F2E600FF995D /* QuestionSelectionDelegate.h */,
 				2AD87A66189726E90069F479 /* NSString+ParsingExtensions.h */,
 				2AD87A67189726E90069F479 /* NSString+ParsingExtensions.m */,
 				A720766718B303A500EC4267 /* PastQuizTable.h */,
 				A720766818B303A500EC4267 /* PastQuizTable.m */,
-				2A3725DD18FC8D3B003D7E15 /* AFKPageFlipper.h */,
-				2A3725DE18FC8D3B003D7E15 /* AFKPageFlipper.m */,
-				2A8F02BC18EA12AD0077C265 /* ILTranslucentView.h */,
-				2A8F02BD18EA12AD0077C265 /* ILTranslucentView.m */,
-				2A3725E018FC9B71003D7E15 /* AnimationDelegate.h */,
-				2A3725E118FC9B71003D7E15 /* AnimationDelegate.m */,
-				2A3725E218FC9B71003D7E15 /* AnimationFrame.h */,
-				2A3725E318FC9B71003D7E15 /* AnimationFrame.m */,
-				2A3725E418FC9B71003D7E15 /* FlipView.h */,
-				2A3725E518FC9B71003D7E15 /* FlipView.m */,
-				2A3725E618FC9B71003D7E15 /* GenericAnimationView.h */,
-				2A3725E718FC9B71003D7E15 /* GenericAnimationView.m */,
+				2AD36D591912C4E400D71555 /* Reachability.h */,
+				2AD36D5A1912C4E400D71555 /* Reachability.m */,
+				2A2DA7A8191BE96B002989F8 /* Open Source */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -706,14 +704,12 @@
 				2A85A10818B6D331002722E5 /* Quiz.m in Sources */,
 				2A8F02BE18EA12AD0077C265 /* ILTranslucentView.m in Sources */,
 				2AD87A68189726E90069F479 /* NSString+ParsingExtensions.m in Sources */,
-				2AA82FE818A5879600FCC137 /* groupResultViewController.m in Sources */,
 				2AD87AB21898801D0069F479 /* QuestionViewController.m in Sources */,
 				2A3725E818FC9B71003D7E15 /* AnimationDelegate.m in Sources */,
 				2A3725E918FC9B71003D7E15 /* AnimationFrame.m in Sources */,
 				2A3725EB18FC9B71003D7E15 /* GenericAnimationView.m in Sources */,
 				2A3725EA18FC9B71003D7E15 /* FlipView.m in Sources */,
 				A755332818B712D4001B9306 /* MyLoginViewController.m in Sources */,
-				2AD87AAF189867750069F479 /* QuizViewController.m in Sources */,
 				A755333D18B97B14001B9306 /* BigButtonViewController.m in Sources */,
 				2AD7CF6618E62E1A002B2246 /* OtherQuizzesTableViewController.m in Sources */,
 				2AD87A6B1897271A0069F479 /* Question.m in Sources */,

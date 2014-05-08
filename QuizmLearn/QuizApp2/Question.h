@@ -32,7 +32,6 @@
 @property (nonatomic) BOOL questionFinished;
 @property (nonatomic) BOOL questionStarted;
 @property (nonatomic) BOOL justEntered;
-//-(NSString *) description;
 
 @end
 

@@ -5,6 +5,7 @@
 //  Created by Bruce Li on 1/27/2014.
 //  Copyright (c) 2014 Bruce Li. All rights reserved.
 //
+//  This class is only relevant in Quizm Teach; it does not play a role in this app
 
 #import "NSString+ParsingExtensions.h"
 
@@ -78,21 +79,6 @@
     return rows;
 }
 
-//- (NSArray *) parse: (NSString *) filePath {
-//    
-//    NSArray *pathFragments = [filePath componentsSeparatedByString:@"."];
-//    NSString *path = pathFragments[0];
-//    //NSString *type = pathFragments[1];
-//    
-//    NSArray *quizInfo = [path componentsSeparatedByString:@"_"];
-//    
-//    NSString *instructor = quizInfo[0];
-//    NSString *quizName = quizInfo[1];
-//    NSString *courseCode = quizInfo[2];
-//    NSString *date = quizInfo[3];
-//    NSLog(@"Instructor: %@, Quiz Name: %@, Course: %@, Date: %@", instructor, quizName, courseCode, date );
-//    return quizInfo;
-//}
 
 @end
 

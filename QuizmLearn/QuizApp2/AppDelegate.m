@@ -11,28 +11,23 @@
 
 @implementation AppDelegate
 
-//@synthesize viewController = _viewController;
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    
+    //Parse backend ID and key
     [Parse setApplicationId:@"1LlY1hjS7ZV2aEjGcH2eIFhXbaL3tfnhdDaghIuz"
                   clientKey:@"bLPC47d78N8aGJIQXSKoJBaoG7rhtdLwX6oVRVXm"];
     
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
-    //[self.window makeKeyAndVisible];
-    //[self.window.rootViewController performSegueWithIdentifier:@"toImportView" sender:self];
-    
-    //self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
     self.viewController = [[ImportViewController alloc]init];
 
-    //self.window.rootViewController = self.viewController;
-    
     UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
     UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
     splitViewController.delegate = (id)navigationController.topViewController;
     
+    
+    //all the url stuff is inherited from the code in Quizm Teach; it does not play a role in this app
     NSURL *url = (NSURL *)[launchOptions valueForKey:UIApplicationLaunchOptionsURLKey];
     if(url != nil && [url isFileURL]) {
         [self.viewController handleOpenURL:url];

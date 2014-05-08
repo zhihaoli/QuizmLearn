@@ -5,7 +5,8 @@
 //  Created by Bruce Li on 2/6/2014.
 //  Copyright (c) 2014 Bruce Li. All rights reserved.
 //
-
+// This class is accessed when the user presses the 'more' button, revealing a list of other unlocked quizzes they are enrolled in
+// This class is very similar to PastQuizVC and probably should have been subclassed
 
 #import <Parse/Parse.h>
 #import "Question.h"
@@ -21,9 +22,6 @@
 @end
 
 @implementation OtherQuizzesTableViewController
-{
-    // NSMutableArray *listPastQuizzes;
-}
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -39,9 +37,7 @@
 {
     [super viewDidLoad];
     
-    
-    
-    
+
     UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
     
     refresh.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing Quizzes"];
@@ -49,8 +45,7 @@
     [refresh addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     
     self.refreshControl = refresh;
-    
-    //[self refresh];
+
 }
 
 -(void)refresh {
@@ -76,10 +71,8 @@
                 if ([quiz[@"Course"] isEqualToString:courseName]){
                     Quiz *_quiz = [[Quiz alloc]init];
                     _quiz.course = quiz[@"Course"];
-                    //_quiz.section = quiz[@"Section"];
                     _quiz.quizName = quiz[@"QuizName"];
                     _quiz.quizIdentifier = quiz[@"QuizIdentifier"];
-                    //NSString *quizName = quiz[@"QuizName"];
                     [self.listPastQuizzes addObject:_quiz];
                 }
                 
@@ -106,14 +99,12 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    //#warning Potentially incomplete method implementation.
     // Return the number of sections.
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    //#warning Incomplete method implementation.
     // Return the number of rows in the section.
     return [self.listPastQuizzes count];
 }
@@ -132,7 +123,6 @@
     }
     
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    //cell.backgroundColor = [UIColor lightGrayColor];
     return cell;
 }
 
@@ -150,38 +140,17 @@
     qvc.quizIdentifier = self.quizIdentifier;
     
     [self dismissViewControllerAnimated:YES completion:nil];
-    //send notification with quiz identifier to Question view controller
-
-     //[self dismissViewControllerAnimated:YES completion:nil];
 }
 
-//-(void)viewWillDisappear:(BOOL)animated {
-//    [super viewWillDisappear:animated];
-//    [[NSNotificationCenter defaultCenter]postNotificationName:@"quizIdentifier" object:self.quizIdentifier];
-//
-//}
-//
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    //if ([segue.identifier isEqual:@"unwindFromOtherQuizzes"]){
-        NSLog(@"loadNewQuiz segue");
-        
+
         NSIndexPath *index = [self.tableView indexPathForCell:sender];
-        
-        
+   
         Quiz *quiz = [self.listPastQuizzes objectAtIndex:index.row];
-        
-        
-        
-        //QuestionViewController *questionVC = (QuestionViewController *)[[segue destinationViewController]topViewController];
-        
+
         self.quizIdentifier = quiz.quizIdentifier;
-        
-        
-        
-        
-        
-   // }
+
 }
 
 

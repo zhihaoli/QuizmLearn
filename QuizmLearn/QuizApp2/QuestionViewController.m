@@ -5,6 +5,7 @@
 //  Created by Bruce Li on 1/28/2014.
 //  Copyright (c) 2014 Bruce Li. All rights reserved.
 //
+// This, along with the QuizTableVC, is the main classes of Quizm Learn and controls most of the functions of the app
 
 #import "QuestionViewController.h"
 #import <Parse/Parse.h>
@@ -35,15 +36,15 @@
 @property (weak, nonatomic) IBOutlet UITextView *answerCLabel;
 @property (weak, nonatomic) IBOutlet UITextView *answerDLabel;
 @property (weak, nonatomic) IBOutlet UITextView *answerELabel;
+
 @property (weak, nonatomic) IBOutlet UIView *viewInScrollView;
 
 @property (weak, nonatomic) IBOutlet UIButton *reportButton;
-@property BOOL *questionFinished;
+
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
 @property (strong, nonatomic) NSArray * questions;
 @property (strong, nonatomic) NSMutableArray *attempts;
 @property (strong, nonatomic) IBOutlet AFKPageFlipper *pageFlipper;
-
 
 @property (weak, nonatomic) IBOutlet UIImageView *scrollIndicator;
 @property (weak, nonatomic) IBOutlet UILabel *Ebackground;
@@ -51,6 +52,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *Cbackground;
 @property (weak, nonatomic) IBOutlet UILabel *Abackground;
 @property (weak, nonatomic) IBOutlet UILabel *bBackground;
+
+@property BOOL *questionFinished;
 
 @end
 
@@ -68,7 +71,7 @@
     BOOL finishedQuestion;
     NSString *messagestring;
     NSString *groupName;
-    NSUInteger *quizLength;
+    NSInteger quizLength;
     NSArray *buttonArray;
     NSArray *imageArray;
     NSArray *startpointsArray;
@@ -94,6 +97,7 @@
 @synthesize reportButton;
 @synthesize popoverController;
 @synthesize resultImage;
+@synthesize colours;
 
 # pragma mark - initial startup stuff
 
@@ -109,27 +113,19 @@
     [super viewDidLoad];
     [self testInternetConnection];
     
+    //Dont enable the nextButton until they've selected a correct answer
     nextButton.enabled = NO;
     [nextButton setBackgroundImage:[UIImage imageNamed:@"buttonbackground"] forState:UIControlStateNormal];
     nextButton.titleLabel.tintColor = [UIColor whiteColor];
     [nextButton setAlpha:0.8];
     
-    //self.answerALabel.backgroundColor = UIColorFromRGB(0xD1EEFC);
-    //self.answerBLabel.backgroundColor = UIColorFromRGB(0xD1EEFC);
-    //self.answerCLabel.backgroundColor = UIColorFromRGB(0xD1EEFC);
-    //self.answerDLabel.backgroundColor = UIColorFromRGB(0xD1EEFC);
-    //self.answerELabel.backgroundColor = UIColorFromRGB(0xD1EEFC);
-    
     [self.scrollView setScrollEnabled:YES];
-    //[self.scrollView setContentSize:CGSizeMake(704, 1400)];
-    //self.scrollView.contentSize = CGSizeMake(768, 1024);
-    
-    //self.viewInScrollView.frame = CGRectMake(0, 0, 768, 900);
+
+    //set the title
    self.navigationItem.title = ( [self.detailItem.qtype isEqualToString:@"0"] ? [NSString stringWithFormat:@"Question %d", self.detailItem.sortedQNumber] :[NSString stringWithFormat:@"Application %d", self.detailItem.sortedQNumber ]);
     
-    
 
-    
+    //Initialize the gesture recognizers over the answer labels
     tapGestureRecognizerA = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapFromA:)];
     tapGestureRecognizerB = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapFromB:)];
     tapGestureRecognizerC = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapFromC:)];
@@ -141,21 +137,7 @@
     [self.answerCLabel addGestureRecognizer:tapGestureRecognizerC];
     [self.answerDLabel addGestureRecognizer:tapGestureRecognizerD];
     [self.answerELabel addGestureRecognizer:tapGestureRecognizerE];
-    
-    
-//    [self.Abackground addGestureRecognizer:tapGestureRecognizerA];
-//     [self.bBackground addGestureRecognizer:tapGestureRecognizerB];
-//     [self.Cbackground addGestureRecognizer:tapGestureRecognizerC];
-//     [self.Dbackground addGestureRecognizer:tapGestureRecognizerD];
-//     [self.Ebackground addGestureRecognizer:tapGestureRecognizerE];
-    
-    
-//    [self.aImage addGestureRecognizer:tapGestureRecognizerA];
-//    [self.bImage addGestureRecognizer:tapGestureRecognizerB];
-//    [self.cImage addGestureRecognizer:tapGestureRecognizerC];
-//    [self.dImage addGestureRecognizer:tapGestureRecognizerD];
-//    [self.eImage addGestureRecognizer:tapGestureRecognizerE];
-    
+
     
     tapGestureArray = [[NSArray alloc]initWithObjects:tapGestureRecognizerA, tapGestureRecognizerB, tapGestureRecognizerC, tapGestureRecognizerD, tapGestureRecognizerE, nil];
     
@@ -164,28 +146,16 @@
     tapGestureRecognizerC.delegate = self;
     tapGestureRecognizerD.delegate = self;
     tapGestureRecognizerE.delegate = self;
-    
-    
-    
-//    [self.qContentLabel sizeToFit];
-//    [self.answerALabel sizeToFit];
-//    [self.answerBLabel sizeToFit];
-//    [self.answerCLabel sizeToFit];
-//    [self.answerDLabel sizeToFit];
-    
+
     buttonArray = [[NSArray alloc] initWithObjects:buttonA, buttonB, buttonC, buttonD, buttonE, nil];
     
     for (UIButton* button in buttonArray) {
         [button setTitleColor:UIColorFromRGB(0x007AFF) forState:UIControlStateNormal];
-        //[button setBackgroundImage:[UIImage imageNamed:@"0square.png"] forState:UIControlStateNormal];
-        
     }
-    
-
     
     imageArray = [[NSArray alloc] initWithObjects:_aImage,_bImage,_cImage,_dImage, _eImage, nil];
     
-    //resultImage.image = [UIImage imageNamed:[NSString stringWithFormat:@"0bar.png"]];
+    //The result Image is the progress bar at the top of each question
     resultImage.alpha = 0.6;
     resultImageStartPoint = resultImage.center;
     
@@ -196,6 +166,8 @@
     
     float movePercentage = 0.0;
     
+    
+    //This set of if statements is to see how much the progress bar decreases for each incorrect answer (less answers, larger decrease)
     if (self.detailItem.numberOfAnswers == 2){
         movePercentage = 1;
     }else if (self.detailItem.numberOfAnswers == 3){
@@ -205,20 +177,13 @@
     }else if (self.detailItem.numberOfAnswers == 5){
         movePercentage = 0.25;
     }
-    
-    NSLog(@"move percentage: %f", movePercentage);
-    
+
     int pixelMove = resultImage.frame.size.width*movePercentage;
-    
-    NSLog(@"pixelMove: %i", pixelMove);
-    
-    
+
     startpointsArray = [[NSArray alloc] initWithObjects:[NSValue valueWithCGPoint:resultImageStartPoint], [NSValue valueWithCGPoint:CGPointMake(resultImageStartPoint.x - pixelMove*1, resultImageStartPoint.y)], [NSValue valueWithCGPoint:CGPointMake(resultImageStartPoint.x - pixelMove*2, resultImageStartPoint.y)], [NSValue valueWithCGPoint:CGPointMake(resultImageStartPoint.x - pixelMove*3, resultImageStartPoint.y)],[NSValue valueWithCGPoint:CGPointMake(resultImageStartPoint.x - pixelMove*4, resultImageStartPoint.y)] , nil] ;
     
     [self.qContentLabel addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
     
-   // DISABLE LOGIN
-   //loggedIn = YES;
 }
 
 - (void)testInternetConnection
@@ -244,9 +209,7 @@
                 [successAlert show];
                 [self performSelector:@selector(hideAlert:) withObject:successAlert afterDelay:2.0];
             }
-            
-            
-            
+
             NSLog(@"Yayyy, we have the interwebs!");
         });
     };
@@ -267,8 +230,7 @@
             [alert setValue:spinner forKey:@"accessoryView"];
             [alert show];
             alertVisible = YES;
-            
-            
+
             NSLog(@"Someone broke the internet :(");
         });
     };
@@ -288,24 +250,15 @@
     
     // The first time the view loads, launch the login
     if (!loggedIn){
+        
         // Create the log in view controller
         MyLoginViewController *logInViewController = [[MyLoginViewController alloc] init];
         [logInViewController setDelegate:self]; // Set ourselves as the delegate
         
         logInViewController.fields = PFLogInFieldsUsernameAndPassword | PFLogInFieldsLogInButton | PFLogInFieldsLogInButton;
         
-        // Create the sign up view controller
-        PFSignUpViewController *signUpViewController = [[PFSignUpViewController alloc] init];
-        [signUpViewController setDelegate:self]; // Set ourselves as the delegate
-        
-        // Assign our sign up controller to be displayed from the login controller
-        [logInViewController setSignUpController:signUpViewController];
-        
-        
         [self presentViewController:logInViewController animated:NO completion:NULL];
     } else if (!quizImported){
-        
-      
         
         [self performSelector:@selector(goToWelcomeMethod) withObject:nil afterDelay:0];
 
@@ -313,24 +266,12 @@
         
         // The third time the view loads, display the first question!
     } else if (!firstQuestionDisplayed){
-
-        //resultImage.image = [UIImage imageNamed:[NSString stringWithFormat:@"0bar.png"]];
-        //resultImage.alpha = 0.5;
-        //resultImageStartPoint = resultImage.center;
-        
-        
-        // Need a starting point for the image
-        
-        //        NSLog(@"The start point is %@", resultImageStartPoint);
         
         // Because it was iffy whether the master table view finished indexing all the questions before the detail view loaded, have a small delay of 0.2 seconds before reloading the table view and displaying the first question.
         [self performSelector:@selector(viewDidLoadDelayedLoading) withObject:self afterDelay:0.4];
     }
 
-   
-    
 }
-
 
 
 - (void)goToWelcomeMethod{
@@ -347,7 +288,7 @@
 - (void)viewDidLoadDelayedLoading{
     firstQuestionDisplayed = YES;
     id masternav = self.splitViewController.viewControllers[0];
-    QuizTableViewController *master = [masternav topViewController];
+    QuizTableViewController *master = (QuizTableViewController *)[masternav topViewController];
     
     
     if ([master isKindOfClass:[QuizTableViewController class]]){
@@ -365,7 +306,6 @@
     }
     
     [self getColoursFromParse];
-    //Get the colours
     
 }
 
@@ -377,21 +317,23 @@
         sender.contentOffset = offset;
     }
     
+    //Scroll only if there is more than 3 answers
     if (self.detailItem.numberOfAnswers>3){
     
-    
+        
+    //Hide the scroll indicator after the last answer has appeared on the screen (reached bottom of view)
     if (self.detailItem.numberOfAnswers == 4){
         if (CGRectEqualToRect(CGRectIntersection(self.scrollView.bounds, self.answerDLabel.frame),
                               self.answerDLabel.frame)){
             [self hideTheTabBarWithAnimation:YES];
-           // NSLog(@"last answer is on screen, dismiss scroll indicator");
         }
+        
     }else if (self.detailItem.numberOfAnswers == 5){
         if (CGRectEqualToRect(CGRectIntersection(self.scrollView.bounds, self.answerELabel.frame),
                               self.answerELabel.frame)){
      [self hideTheTabBarWithAnimation:YES];
-                 // NSLog(@"last answer is on screen, dismiss scroll indicator");
     }
+        
     }else{
         [self unhideTheTabBarWithAnimation:YES];
     }
@@ -425,9 +367,7 @@
 +(void) shouldDisableButton:(UIButton *)sender should:(BOOL)state {
     
     NSSet *normalbuttonStrings = [NSSet setWithObjects:@"A", @"B", @"C",@"D", @"E", nil];
-    
-    
-    
+
     sender.enabled = !state;
     
     // If it's a report button set the appropriate label text and background image
@@ -446,7 +386,7 @@
 }
 
 // Public method so that the master knows if it should update the tableview cell image
-- (BOOL *)shouldUpdatePhoto {
+- (BOOL)shouldUpdatePhoto {
     return (self.detailItem.questionFinished);
 }
 
@@ -462,25 +402,19 @@
 // Called from sendAttempts to parse, needed to create the attempts array
 - (void)assignQuizLengthFromMaster:(QuizTableViewController *)qtvc{
     quizLength = [qtvc giveQuizLength];
-    
-    
-    NSLog(@"QuestionViewControlle thinks there are %d questions", (int)quizLength);
 }
 
 # pragma mark - main stuff
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-    NSLog(@"Entered prepareForSegue");
-    
-    
-    
+
     if ([[segue destinationViewController] isKindOfClass:[ImportViewController class]])
     {
-        
         if (groupName){ // Send the groupname to importview controller to display in the welcome label
             ImportViewController *destView = [segue destinationViewController];
             destView.groupName = groupName;
         }
+        
     } else if ([segue.identifier isEqualToString: @"goToBigButton"]){
         // Send the BigButton view the button that was assigned to the report question in buttonpressed
         BigButtonViewController *destViewC = [segue destinationViewController];
@@ -490,6 +424,8 @@
     }
 }
 
+
+//This method is the center the text in the textField boxes for each answer/question content
 -(void)observeValueForKeyPath:(NSString *)keyPath   ofObject:(id)object   change:(NSDictionary *)change   context:(void *)context {
     UITextView *tv = object;
     CGFloat topCorrect = ([tv bounds].size.height - [tv contentSize].height * [tv zoomScale])  / 2.0;
@@ -497,74 +433,41 @@
     tv.contentOffset = (CGPoint){.x = 0, .y = -topCorrect};
 }
 
+
 - (void) handleTapFromA: (UITapGestureRecognizer *)recognizer
 {
     [self clicked:self.buttonA];
-    NSLog(@"label A tapped by %@", recognizer);
-    
     recognizer.enabled = NO;
-    //Code to handle the gesture
 }
 
 - (void) handleTapFromB: (UITapGestureRecognizer *)recognizer
 {
     [self clicked:self.buttonB];
-    NSLog(@"label B tapped by %@", recognizer);
-    
     recognizer.enabled = NO;
-    //Code to handle the gesture
 }
 
 - (void) handleTapFromC: (UITapGestureRecognizer *)recognizer
 {
     [self clicked:self.buttonC];
-    NSLog(@"label C tapped by %@", recognizer);
-    
     recognizer.enabled = NO;
-    //Code to handle the gesture
 }
 
 - (void) handleTapFromD: (UITapGestureRecognizer *)recognizer
 {
     [self clicked:self.buttonD];
-    NSLog(@"label D tapped by %@", recognizer);
-    
     recognizer.enabled = NO;
-    //Code to handle the gesture
 }
 
 - (void) handleTapFromE: (UITapGestureRecognizer *)recognizer
 {
     [self clicked:self.buttonE];
-    NSLog(@"label E tapped by %@", recognizer);
-    
     recognizer.enabled = NO;
-    //Code to handle the gesture
 }
 
 // Called from the master when a new question is pushed, also called for nextbutton. It manages updating all the labels, and calls the neccesarry methods to update the images and buttons
 - (void)switchQuestion{
     
-//    if (!self.detailItem.questionFinished){
-//        tapGestureRecognizerA.enabled = YES;
-//         tapGestureRecognizerB.enabled = YES;
-//         tapGestureRecognizerC.enabled = YES;
-//         tapGestureRecognizerD.enabled = YES;
-//         tapGestureRecognizerE.enabled = YES;
-//    }
-    
-    NSLog(@"%@  %@", self.detailItem.questionNumber, self.detailItem.questionContent);
-    
-    NSLog(@"Position of the bar: x:%f y:%f", resultImage.center.x, resultImage.center.y);
-    
-    //[self.pageFlipper setCurrentPage:[self.detailItem.questionNumber integerValue] animated:YES];
-    
-//    if (UIDeviceOrientationIsLandscape(self.interfaceOrientation)){
-//        resultImage.center = CGPointMake(384, 86);
-//    }else{
-//        resultImage.center = CGPointMake(384, 1002.5);
-//    }
- 
+    //Hide or unhide the scroll indicators (depending on number of answers)
     if (self.detailItem.numberOfAnswers>3) {
         
         [self unhideTheTabBarWithAnimation:YES];
@@ -572,42 +475,31 @@
         [self hideTheTabBarWithAnimation:YES];
     }
     
+    //Cool flip animation when you change questions
     [UIView transitionWithView:self.view duration:0.6 options:UIViewAnimationOptionTransitionFlipFromRight animations:^{
         
         
-        
-//        AnimationDelegate *animationDelegate = [[AnimationDelegate alloc] initWithSequenceType:kSequenceTriggered  directionType:kDirectionForward];
-//        
-//        FlipView *flipView = [[FlipView alloc] initWithAnimationType:kAnimationFlipHorizontal frame:self.view.frame];
-//        
-//        animationDelegate.transformView = flipView;
-//        
-//        [animationDelegate startAnimation:kDirectionForward];
-//        
+        //Set the Question Content and each answer
         self.qContentLabel.text = [NSString stringWithFormat:@"%@. %@", self.detailItem.questionNumber, self.detailItem.questionContent];
         self.qContentLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
         
-        
         [self.qContentLabel addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
         self.qContentLabel.textAlignment = NSTextAlignmentCenter;
-  
- 
-
-
-
-
         
         self.answerALabel.text = [NSString stringWithFormat: @"%@", self.detailItem.answerA];
         self.answerALabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
         [self.answerALabel addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
-               self.answerALabel.textAlignment = NSTextAlignmentCenter;
+        self.answerALabel.textAlignment = NSTextAlignmentCenter;
+        
+        
+        //Depending on the number of answers, turn on and off different labels and format each one appropriately
         
         if (self.detailItem.numberOfAnswers == 2) {
-        
-        self.answerBLabel.text = [NSString stringWithFormat: @"%@", self.detailItem.answerB];
-        self.answerBLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
-        [self.answerBLabel addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
-                    self.answerBLabel.textAlignment = NSTextAlignmentCenter;
+            
+            self.answerBLabel.text = [NSString stringWithFormat: @"%@", self.detailItem.answerB];
+            self.answerBLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
+            [self.answerBLabel addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
+            self.answerBLabel.textAlignment = NSTextAlignmentCenter;
             
             //NO C, D, E
             self.answerCLabel.hidden = YES;
@@ -623,10 +515,8 @@
             self.Dbackground.backgroundColor = [UIColor clearColor];
             self.Ebackground.backgroundColor = [UIColor clearColor];
             
-        
+            
         }
-        
-        
         
         if (self.detailItem.numberOfAnswers == 3){
             
@@ -634,16 +524,16 @@
             self.answerBLabel.text = [NSString stringWithFormat: @"%@", self.detailItem.answerB];
             self.answerBLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
             [self.answerBLabel addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
-               self.answerBLabel.textAlignment = NSTextAlignmentCenter;
+            self.answerBLabel.textAlignment = NSTextAlignmentCenter;
             
             
             self.answerCLabel.hidden = NO;
             self.buttonC.alpha = 1;
-        
-        self.answerCLabel.text = [NSString stringWithFormat: @"%@", self.detailItem.answerC];
-        self.answerCLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
-        [self.answerCLabel addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
-                    self.answerCLabel.textAlignment = NSTextAlignmentCenter;
+            
+            self.answerCLabel.text = [NSString stringWithFormat: @"%@", self.detailItem.answerC];
+            self.answerCLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
+            [self.answerCLabel addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
+            self.answerCLabel.textAlignment = NSTextAlignmentCenter;
             
             
             self.Cbackground.backgroundColor = UIColorFromRGB(0x007AFF);
@@ -651,12 +541,13 @@
             self.Dbackground.backgroundColor = [UIColor clearColor];
             self.Ebackground.backgroundColor = [UIColor clearColor];
             
+            //NO D and E
             self.answerDLabel.hidden = YES;
             self.buttonD.alpha = 0;
             
             self.answerELabel.hidden = YES;
             self.buttonE.alpha = 0;
-        
+            
         }
         
         
@@ -665,7 +556,7 @@
             self.answerBLabel.text = [NSString stringWithFormat: @"%@", self.detailItem.answerB];
             self.answerBLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
             [self.answerBLabel addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
-               self.answerBLabel.textAlignment = NSTextAlignmentCenter;
+            self.answerBLabel.textAlignment = NSTextAlignmentCenter;
             
             self.answerCLabel.hidden = NO;
             self.buttonC.alpha = 1;
@@ -673,6 +564,7 @@
             self.answerDLabel.hidden = NO;
             self.buttonD.alpha = 1;
             
+            //NO E
             self.answerELabel.hidden = YES;
             self.buttonE.alpha = 0;
             
@@ -681,19 +573,19 @@
             self.Dbackground.backgroundColor = UIColorFromRGB(0x007AFF);
             self.Dbackground.alpha = 0.3;
             
-              self.Ebackground.backgroundColor = [UIColor clearColor];
+            self.Ebackground.backgroundColor = [UIColor clearColor];
             
             self.answerCLabel.text = [NSString stringWithFormat: @"%@", self.detailItem.answerC];
             self.answerCLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
             [self.answerCLabel addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
             
-                self.answerCLabel.textAlignment = NSTextAlignmentCenter;
+            self.answerCLabel.textAlignment = NSTextAlignmentCenter;
             
             self.answerDLabel.text = [NSString stringWithFormat: @"%@", self.detailItem.answerD];
             self.answerDLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
             [self.answerDLabel addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
             
-                self.answerDLabel.textAlignment = NSTextAlignmentCenter;
+            self.answerDLabel.textAlignment = NSTextAlignmentCenter;
             
         }
         
@@ -702,7 +594,7 @@
             self.answerBLabel.text = [NSString stringWithFormat: @"%@", self.detailItem.answerB];
             self.answerBLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
             [self.answerBLabel addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
-               self.answerBLabel.textAlignment = NSTextAlignmentCenter;
+            self.answerBLabel.textAlignment = NSTextAlignmentCenter;
             
             self.answerCLabel.hidden = NO;
             self.buttonC.alpha = 1;
@@ -723,27 +615,27 @@
             self.answerCLabel.text = [NSString stringWithFormat: @"%@", self.detailItem.answerC];
             self.answerCLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
             [self.answerCLabel addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
-                self.answerCLabel.textAlignment = NSTextAlignmentCenter;
+            self.answerCLabel.textAlignment = NSTextAlignmentCenter;
             
             self.answerDLabel.text = [NSString stringWithFormat: @"%@", self.detailItem.answerD];
             self.answerDLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
             [self.answerDLabel addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
- self.answerDLabel.textAlignment = NSTextAlignmentCenter;
-    
-        self.answerELabel.text = [NSString stringWithFormat: @"%@", self.detailItem.answerE];
-        self.answerELabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
-        [self.answerELabel addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
-                 self.answerELabel.textAlignment = NSTextAlignmentCenter;
+            self.answerDLabel.textAlignment = NSTextAlignmentCenter;
+            
+            self.answerELabel.text = [NSString stringWithFormat: @"%@", self.detailItem.answerE];
+            self.answerELabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
+            [self.answerELabel addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
+            self.answerELabel.textAlignment = NSTextAlignmentCenter;
         }
-     
-
+        
+        
     }completion:nil];
     
     if ([self qIsTypeNormal]){
+        
+        //Disable the report button if it is not an Application Question
         [QuestionViewController shouldDisableButton:reportButton should:YES];
-        
-       
-        
+
         self.progressBarBorder.image = [UIImage imageNamed:@"4bar.png"];
         self.progressBarBorder.alpha = 0.6;
         resultImage.image = [UIImage imageNamed:[NSString stringWithFormat:@"0bar.png"]];
@@ -772,13 +664,8 @@
             
             int pixelMove = resultImage.frame.size.width*movePercentage;
             
+            //Ensure proper alignment and positioning of the progress bar as it moves
             resultImage.center = CGPointMake(384-([self.detailItem.qAttempts intValue]*pixelMove), 84);
-            
-            
-//            [UIView animateWithDuration:1.0 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{ resultImage.center = CGPointMake(resultImage.center.x-pixelMove, resultImage.center.y); } completion:^ (BOOL fin){ }];
-//            
-            
-            
             
             resultImageStartPoint = resultImage.center;
         }
@@ -790,7 +677,9 @@
             self.attemptsLabel.text = [NSString stringWithFormat:@"Attempts Left: %ld", self.detailItem.numberOfAnswers - [self.detailItem.qAttempts integerValue]];
         }
         nextButton.enabled = NO;
-    } else { // else, it is a report question!
+        
+        
+    } else { // else, it is an Application question!
         
         resultImage.image = nil;
         self.progressBarBorder.image = nil;
@@ -801,19 +690,15 @@
         
         self.attemptsLabel.text = @"";
         
-//        if (!self.questionFinished){
-//        self.attemptsLabel.text = @"Application Question";
-//        }else{
-//            self.attemptsLabel.text = @"";
-//        }
     }
     // These handle all the logistics for enabling buttons and setting images.
     [self EnableButtonsAccordingToButtonsPressed];
     [self SetImagesAccordingToButtonsPressed];
     
-   
+    
 }
 
+//Change the color of an image (in this case, the Big Button Letters and Background)
 - (UIImage *)colorImageWithColor:(UIColor *)color withImage:(UIImage *)image
 {
     // Make a rectangle the size of your image
@@ -854,9 +739,6 @@
         if ([self.detailItem.questionNumber integerValue] != (int)quizLength-1 ){
             
             [QuestionViewController shouldDisableButton:nextButton should:NO];
-            
-            //nextButton.enabled = YES;
-            
         }
         
         // if it is a report question, AND the question is finished, you need to enable the report choice button and make sure that the current reportChoicebutton is correct.
@@ -890,15 +772,6 @@
     
     if ([self qIsTypeNormal]){
         
-//        [buttonA setBackgroundImage:nil forState:UIControlStateNormal];
-//        [buttonB setBackgroundImage:nil forState:UIControlStateNormal];
-//        [buttonC setBackgroundImage:nil forState:UIControlStateNormal];
-//        [buttonD setBackgroundImage:nil forState:UIControlStateNormal];
-//        [buttonE setBackgroundImage:nil forState:UIControlStateNormal];
-        
-        
-        
-
         // Set the lower progress bar image for the first time
         if (!self.detailItem.qAttempts)
         {
@@ -912,11 +785,7 @@
         {
             
             if (!self.detailItem.justEntered){
-               
-               
-            
-            
-            
+
             float movePercentage = 0.0;
             
             if (self.detailItem.numberOfAnswers == 2){
@@ -946,61 +815,35 @@
         
         
         // Set the check mark and x images
+        // 1, 2, 3 are special codes assigned to each question to track its state
         for(int index = 0; index < 5; index++)
         {
             if ([[self.detailItem.ButtonsPressed objectAtIndex:index] isEqualToValue:@1]){
                 flag = true;
                 UIImageView *tempimage = [imageArray objectAtIndex:index];
                 tempimage.image = [UIImage imageNamed:@"redX7.png"];
+                
             } else if ([[self.detailItem.ButtonsPressed objectAtIndex:index] isEqualToValue:@2]){
                 flag = true;
                 UIImageView *tempimage = [imageArray objectAtIndex:index];
-                
-                //tempimage.image = [self colorImageWithColor: UIColorFromRGB(0x4CD964) withImage:[UIImage imageNamed:@"ok-512.png"]];
-
-                
+               
                 tempimage.image = [UIImage imageNamed:@"ok-512.png"];
-                
-                
-                // If you decide to animate the presentation of the correct answer image some starter code is below
-                
-//                [UIView animateWithDuration:1.0 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-//                    
-//                    [tempimage setFrame:CGRectMake(tempimage.center.x, tempimage.center.y, 110.0f, 110.0f)];
-//                } completion:^ (BOOL fin){ }];
+
             } else if ([[self.detailItem.ButtonsPressed objectAtIndex:index] isEqualToValue:@0]){
                 UIImageView *tempimage = [imageArray objectAtIndex:index];
                 tempimage.image = nil;
             }
-            
-            
-            
-            NSLog(@"set images, bar x: %f, bary: %f", resultImage.center.x, resultImage.center.y);
-            
-            
+      
         }
 
     } else { // it's a report question, need to set the background image to show its been selected, and make sure all other images are nil
-        
-        
-        
+     
         _aImage.image = nil;
         _bImage.image = nil;
         _cImage.image = nil;
         _dImage.image = nil;
         _eImage.image = nil;
-        
-//        _aImage.alpha = 0;
-//         _bImage.alpha = 0;
-//         _cImage.alpha = 0;
-//         _dImage.alpha = 0;
-//         _eImage.alpha = 0;
-//        [buttonA setBackgroundImage:nil forState:UIControlStateNormal];
-//        [buttonB setBackgroundImage:nil forState:UIControlStateNormal];
-//        [buttonC setBackgroundImage:nil forState:UIControlStateNormal];
-//        [buttonD setBackgroundImage:nil forState:UIControlStateNormal];
-//        [buttonE setBackgroundImage:nil forState:UIControlStateNormal];
-        
+     
         resultImage.center = resultImageStartPoint;
         
         // The @3 in the index of buttonspressed means it was chosen as a report question answer
@@ -1020,7 +863,6 @@
         id masternav = self.splitViewController.viewControllers[0];
         QuizTableViewController *master = (QuizTableViewController *)[masternav topViewController];
         
-        
         NSArray *indexPaths;
         if ([self.detailItem.qtype isEqualToString:@"0"]){
         
@@ -1031,9 +873,7 @@
 
        [master.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
     }
-    
-    
-    NSLog(@"set images exiting method, bar x: %f, bary: %f", resultImage.center.x, resultImage.center.y);
+
 }
 
 // Called when a correct answer is pressed or anytime a report answer is chosen
@@ -1050,8 +890,7 @@
         for (int i = 0; i < (int)quizLength+1; i++ ){
             [self.attempts insertObject:@0 atIndex:i];
         }
-        NSLog(@"The legth of attempts array: %lu\nThe number of questions: %d", (unsigned long)[self.attempts count], quizLength);
-        
+
     // This is needed so the instructor doesnt try and pull stuff from you when you havent started the quiz
     if (!startedQuiz){
             startedQuiz = YES;
@@ -1066,7 +905,7 @@
             
             [resultArray save];
         
-            // Bruce knows what this does
+            //This is to keep track of the original results array, so each update updates the same array rather than creating a new one
             resultsArrayID = [resultArray objectId];
             NSLog(@"Result Array ID: %@", [resultArray objectId]);
         }
@@ -1157,7 +996,6 @@
         NSLog(@"The question number is %ld", (long)[self.detailItem.questionNumber integerValue]);
         [self goToNextQuestion];
     }
-
 
 }
 
@@ -1252,52 +1090,22 @@
         
         
         [self presentViewController:logInViewController animated:NO completion:NULL];
-        
-        //NSMutableArray *sneakyLogout = [[NSMutableArray alloc] initWithObjects:@[@0], nil];
-        //NSLog(@"%@", sneakyLogout[2]);
+
     }
 }
 
-
-
-
-- (void)longTapButton{
-    // Commented code is for a longtap button
-    
-    //- (IBAction)touchedDown:(UIButton *)sender {
-    //    NSLog(@"entered touch down");
-    //    //buttonTimer =
-    //    if ( ![buttonTimer isValid]) {
-    //        currentButton = sender.titleLabel.text;
-    //        buttonTimer = [NSTimer scheduledTimerWithTimeInterval:2.0
-    //                                                       target:self
-    //                                                     selector:@selector(showBigLetter:)
-    //                                                     userInfo:nil
-    //                                                      repeats:NO];
-    //    } else {
-    //        NSLog(@"Timer already started!");
-    //    }
-    //
-    //}
-    
-    //- (void)showBigLetter: (UIButton *)sender{
-    //    //NSLog(@"Timer worked");
-    //    [self performSegueWithIdentifier: @"goToBigButton" sender: self];
-    //}
-}
 
 #pragma mark - page flipper protocols
 
 - (NSInteger) numberOfPagesForPageFlipper:(AFKPageFlipper *) pageFlipper{
     
-    return *quizLength;
+    return quizLength;
     
 }
 - (UIView *) viewForPage:(NSInteger) page inFlipper:(AFKPageFlipper *) pageFlipper{
     UIView *view = [[UIView alloc] initWithFrame:pageFlipper.frame];
     
     return view;
-    
 }
 
 
@@ -1311,7 +1119,6 @@
         if (CGRectEqualToRect(CGRectIntersection(self.scrollView.bounds, self.answerDLabel.frame),
                               self.answerDLabel.frame)){
             [self hideTheTabBarWithAnimation:YES];
-           // NSLog(@"last answer is on screen, dismiss scroll indicator");
         }else{
             [self unhideTheTabBarWithAnimation:YES];
         }
@@ -1322,7 +1129,6 @@
         if (CGRectEqualToRect(CGRectIntersection(self.scrollView.bounds, self.answerELabel.frame),
                               self.answerELabel.frame)){
             [self hideTheTabBarWithAnimation:YES];
-          //  NSLog(@"last answer is on screen, dismiss scroll indicator");
         }else{
             [self unhideTheTabBarWithAnimation:YES];
         }
@@ -1333,25 +1139,23 @@
 -(void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
     
     if (self.detailItem.numberOfAnswers>3){
-    
-    if (self.detailItem.numberOfAnswers == 4){
-        if (CGRectEqualToRect(CGRectIntersection(self.scrollView.bounds, self.answerDLabel.frame),
-                              self.answerDLabel.frame)){
-            [self hideTheTabBarWithAnimation:YES];
-           // NSLog(@"last answer is on screen, dismiss scroll indicator");
-        }else{
-            [self unhideTheTabBarWithAnimation:YES];
+        
+        if (self.detailItem.numberOfAnswers == 4){
+            if (CGRectEqualToRect(CGRectIntersection(self.scrollView.bounds, self.answerDLabel.frame),
+                                  self.answerDLabel.frame)){
+                [self hideTheTabBarWithAnimation:YES];
+            }else{
+                [self unhideTheTabBarWithAnimation:YES];
+            }
+        }else if (self.detailItem.numberOfAnswers == 5){
+            if (CGRectEqualToRect(CGRectIntersection(self.scrollView.bounds, self.answerELabel.frame),
+                                  self.answerELabel.frame)){
+                [self hideTheTabBarWithAnimation:YES];
+            }else{
+                [self unhideTheTabBarWithAnimation:YES];
+            }
         }
-    }else if (self.detailItem.numberOfAnswers == 5){
-        if (CGRectEqualToRect(CGRectIntersection(self.scrollView.bounds, self.answerELabel.frame),
-                              self.answerELabel.frame)){
-            [self hideTheTabBarWithAnimation:YES];
-          //  NSLog(@"last answer is on screen, dismiss scroll indicator");
-        }else{
-            [self unhideTheTabBarWithAnimation:YES];
-        }
-    }
-    
+        
     }
 }
 
@@ -1364,24 +1168,24 @@
 -(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     
     if (self.detailItem.numberOfAnswers>3){
-    
-    if (self.detailItem.numberOfAnswers == 4){
-        if (CGRectEqualToRect(CGRectIntersection(self.scrollView.bounds, self.answerDLabel.frame),
-                              self.answerDLabel.frame)){
-            [self hideTheTabBarWithAnimation:YES];
-           // NSLog(@"last answer is on screen, dismiss scroll indicator");
-        }else{
-            [self unhideTheTabBarWithAnimation:YES];
+        
+        if (self.detailItem.numberOfAnswers == 4){
+            if (CGRectEqualToRect(CGRectIntersection(self.scrollView.bounds, self.answerDLabel.frame),
+                                  self.answerDLabel.frame)){
+                [self hideTheTabBarWithAnimation:YES];
+
+            }else{
+                [self unhideTheTabBarWithAnimation:YES];
+            }
+        }else if (self.detailItem.numberOfAnswers == 5){
+            if (CGRectEqualToRect(CGRectIntersection(self.scrollView.bounds, self.answerELabel.frame),
+                                  self.answerELabel.frame)){
+                [self hideTheTabBarWithAnimation:YES];
+
+            }else{
+                [self unhideTheTabBarWithAnimation:YES];
+            }
         }
-    }else if (self.detailItem.numberOfAnswers == 5){
-        if (CGRectEqualToRect(CGRectIntersection(self.scrollView.bounds, self.answerELabel.frame),
-                              self.answerELabel.frame)){
-            [self hideTheTabBarWithAnimation:YES];
-          //  NSLog(@"last answer is on screen, dismiss scroll indicator");
-        }else{
-            [self unhideTheTabBarWithAnimation:YES];
-        }
-    }
         
     }
 }
@@ -1472,44 +1276,4 @@
     NSLog(@"User dismissed the logInViewController");
 }
 
-//#pragma mark - PFSignUpViewControllerDelegate
-//
-//// Signup isnt needed, but keep if we ever want to implement it.
-//
-//// Sent to the delegate to determine whether the sign up request should be submitted to the server.
-//- (BOOL)signUpViewController:(PFSignUpViewController *)signUpController shouldBeginSignUp:(NSDictionary *)info {
-//    BOOL informationComplete = YES;
-//    
-//    // loop through all of the submitted data
-//    for (id key in info) {
-//        NSString *field = [info objectForKey:key];
-//        if (!field || !field.length) { // check completion
-//            informationComplete = NO;
-//            break;
-//        }
-//    }
-//    
-//    // Display an alert if a field wasn't completed
-//    if (!informationComplete) {
-//        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Missing Information", nil) message:NSLocalizedString(@"Make sure you fill out all of the information!", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
-//    }
-//    
-//    return informationComplete;
-//}
-//
-//// Sent to the delegate when a PFUser is signed up.
-//- (void)signUpViewController:(PFSignUpViewController *)signUpController didSignUpUser:(PFUser *)user {
-//    [self dismissViewControllerAnimated:YES completion:NULL];
-//}
-//
-//// Sent to the delegate when the sign up attempt fails.
-//- (void)signUpViewController:(PFSignUpViewController *)signUpController didFailToSignUpWithError:(NSError *)error {
-//    NSLog(@"Failed to sign up...");
-//}
-//
-//// Sent to the delegate when the sign up screen is dismissed.
-//- (void)signUpViewControllerDidCancelSignUp:(PFSignUpViewController *)signUpController {
-//    NSLog(@"User dismissed the signUpViewController");
-//}
-//
 @end

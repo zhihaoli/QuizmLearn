@@ -18,15 +18,13 @@
 @property (strong, nonatomic) NSIndexPath *currentSelection;
 @property (strong, nonatomic) NSString *currentButtonSelected;
 
-//@property (strong, nonatomic) NSArray * questions;
 @property (strong, nonatomic) NSString * quizIdentifier;
-//@property (nonatomic) NSUInteger * quizLength;
 @property (strong, nonatomic) QuestionViewController *questionViewController;
 
-@property (strong, nonatomic) NSArray *listPastQuizzes;
+@property (strong, nonatomic) NSMutableArray *listPastQuizzes;
 @property (strong, nonatomic) NSMutableArray *listOfQuestions;
-- (NSUInteger *)giveQuizLength;
-//@property (nonatomic, assign) id<QuestionSelectionDelegate> delegate;
+
+- (NSInteger)giveQuizLength;
 
 -(void)prepareQuestionViewController:(QuestionViewController *)qvc toDisplayQuestionAtRow:(NSInteger)row;
 

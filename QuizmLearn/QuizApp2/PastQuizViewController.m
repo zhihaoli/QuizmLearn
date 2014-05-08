@@ -9,7 +9,6 @@
 #import "PastQuizViewController.h"
 #import <Parse/Parse.h>
 #import "Question.h"
-#import "Quiz.h"
 
 
 @interface PastQuizViewController ()
@@ -19,9 +18,6 @@
 @end
 
 @implementation PastQuizViewController
-{
-    // NSMutableArray *listPastQuizzes;
-}
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -36,10 +32,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    
-    
-    
+
     UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
     
     refresh.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing Quizzes"];
@@ -67,6 +60,7 @@
     [query findObjectsInBackgroundWithBlock:^(NSArray *pQuiz, NSError *error) {
         if (!error) {
             
+            //retrieve the list of unlocked quizzes in the course this group is enrolled in
             self.listPastQuizzes = [[NSMutableArray alloc]init];
             
             for (PFObject *quiz in pQuiz) {
@@ -74,10 +68,8 @@
                 if ([quiz[@"Course"] isEqualToString:courseName] && [quiz[@"isLocked"] isEqualToString:@"NO"]){
                     Quiz *_quiz = [[Quiz alloc]init];
                     _quiz.course = quiz[@"Course"];
-                    //_quiz.section = quiz[@"Section"];
                     _quiz.quizName = quiz[@"QuizName"];
                     _quiz.quizIdentifier = quiz[@"QuizIdentifier"];
-                    //NSString *quizName = quiz[@"QuizName"];
                     [self.listPastQuizzes addObject:_quiz];
                 }
                 
@@ -104,14 +96,12 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    //#warning Potentially incomplete method implementation.
     // Return the number of sections.
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    //#warning Incomplete method implementation.
     // Return the number of rows in the section.
     return [self.listPastQuizzes count];
 }
@@ -136,28 +126,10 @@
 
 #pragma mark - Table View Delegate
 
-//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    Quiz *quiz = [self.listPastQuizzes objectAtIndex:indexPath.row];
-//    self.quizIdentifier = quiz.quizIdentifier;
-//
-//    NSLog(@"The quiz Identifier for for past quiz view is %@", self.quizIdentifier);
-//
-//    //send notification with quiz identifier to Question view controller
-//
-//     //[self dismissViewControllerAnimated:YES completion:nil];
-//}
-
-//-(void)viewWillDisappear:(BOOL)animated {
-//    [super viewWillDisappear:animated];
-//    [[NSNotificationCenter defaultCenter]postNotificationName:@"quizIdentifier" object:self.quizIdentifier];
-//
-//}
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqual:@"unwindToQuestion"]){
-        NSLog(@"Entered Unwind Segue");
         
         NSIndexPath *index = [self.tableView indexPathForCell:sender];
         
@@ -166,17 +138,7 @@
         
         QuestionViewController *destVC = (QuestionViewController *)[segue destinationViewController];
         destVC.listPastQuizzes = self.listPastQuizzes;
-        
-        
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
-        //
-        //        Impo
-        //        rtViewController *destViewC = [segue destinationViewController];
-        //
-        //        destViewC.quizIdentifier = self.quizIdentifier;
-        //        [self dismissViewControllerAnimated:YES completion:nil];
-        
+
     }
 }
 

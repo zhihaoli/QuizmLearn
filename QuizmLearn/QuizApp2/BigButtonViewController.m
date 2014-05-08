@@ -44,7 +44,7 @@ UIColor *cbackgroundColour;
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    //[self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:[NSString stringWithFormat:@"report%@.png", self.currentButton]]]];
+    //Set the correct background and fontColors for each button based on the colors array in Parse
     
     if ([self.currentButton isEqualToString:@"A"]){
         backgroundColour = [self.colours objectAtIndex:0];
@@ -81,12 +81,10 @@ UIColor *cbackgroundColour;
     
     self.bigButtonImage.image = [UIImage imageNamed:[NSString stringWithFormat:@"report%@.png", self.currentButton]];
     self.bigButtonImage.image = [self colorImageWithColor:cfontColour withImage:[UIImage imageNamed:[NSString stringWithFormat:@"report%@.png", self.currentButton]]];
-    
-    //self.bigButtonImage.image = [self imageNamed:[NSString stringWithFormat:@"report%@.png", self.currentButton] withColor:cfontColour];
+
     
     self.view.backgroundColor = cbackgroundColour;
-    
-   // _bigButtonImage.image = [UIImage imageNamed:[NSString stringWithFormat:@"big%@", self.currentButton]];
+
 }
 
 - (IBAction)didTapImage:(UITapGestureRecognizer *)sender {
@@ -102,43 +100,8 @@ UIColor *cbackgroundColour;
     return [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:1.0];
 }
 
-//-(UIImage *)imageNamed:(NSString *)name withColor:(UIColor *)color {
-//    // load the image
-//    
-//    UIImage *img = [UIImage imageNamed:name];
-//    
-//    // begin a new image context, to draw our colored image onto
-//    UIGraphicsBeginImageContext(img.size);
-//    
-//    // get a reference to that context we created
-//    CGContextRef context = UIGraphicsGetCurrentContext();
-//    
-//    // set the fill color
-//    [color setFill];
-//    
-//    // translate/flip the graphics context (for transforming from CG* coords to UI* coords
-//    CGContextTranslateCTM(context, 0, img.size.height);
-//    CGContextScaleCTM(context, 1.0, -1.0);
-//    
-//    // set the blend mode to color burn, and the original image
-//    CGContextSetBlendMode(context, kCGBlendModeColorBurn);
-//    CGRect rect = CGRectMake(0, 0, img.size.width, img.size.height);
-//    CGContextDrawImage(context, rect, img.CGImage);
-//    
-//    // set a mask that matches the shape of the image, then draw (color burn) a colored rectangle
-//    CGContextClipToMask(context, rect, img.CGImage);
-//    CGContextAddRect(context, rect);
-//    CGContextDrawPath(context,kCGPathFill);
-//    
-//    // generate a new UIImage from the graphics context we drew onto
-//    UIImage *coloredImg = UIGraphicsGetImageFromCurrentImageContext();
-//    UIGraphicsEndImageContext();
-//    
-//    //return the color-burned image
-//    return coloredImg;
-//}
 
-
+//Change the background and font color of the image
 - (UIImage *)colorImageWithColor:(UIColor *)color withImage:(UIImage *)image
 {
     // Make a rectangle the size of your image
@@ -163,11 +126,6 @@ UIColor *cbackgroundColour;
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    
-//    if(isPortrait) {
-//           [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:[NSString stringWithFormat:@"big%@.png", self.currentButton]]]];
-//    } else if (isLandscape){
-//          [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:[NSString stringWithFormat:@"bigP%@.png", self.currentButton]]]];
     
 }
 

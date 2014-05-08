@@ -66,7 +66,7 @@ BOOL isValid;
         [self.logInView.logo setFrame:CGRectMake(355.0f,-20.0f, 300.0f, 400.0f)];
     }
     
-    //[self.logInView.logo setFrame:CGRectMake(225.0f, 110.0f, 300.0f, 400.0f)];
+//    [self.logInView.logo setFrame:CGRectMake(225.0f, 110.0f, 300.0f, 400.0f)];
 //    [self.logInView.facebookButton setFrame:CGRectMake(35.0f, 287.0f, 120.0f, 40.0f)];
 //    [self.logInView.twitterButton setFrame:CGRectMake(35.0f+130.0f, 287.0f, 120.0f, 40.0f)];
 //    [self.logInView.signUpButton setFrame:CGRectMake(35.0f, 385.0f, 250.0f, 40.0f)];

@@ -30,13 +30,4 @@
 
 
 @end
-//
-//@synthesize questionNumber = _questionNumber;
-//@synthesize questionContent = _questionContent;
-//@synthesize answerA = _answerA;
-//@synthesize answerB = _answerB;
-//@synthesize answerC = _answerC;
-//@synthesize answerD = _answerD;
-//@synthesize correctAnswer = _correctAnswer;
-//@synthesize qAttempts = _qAttempts;
 

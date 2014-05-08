@@ -12,11 +12,8 @@
 
 @interface ImportViewController : UIViewController <PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate>
 
-- (void) handleOpenURL: (NSURL *) url;
-
 @property (strong, nonatomic) NSArray *importedRows;
 @property (strong, nonatomic) NSArray * questions;
-//- (NSArray *) getQuestions;
 
 @property (strong, nonatomic) NSString *quizIdentifier;
 
