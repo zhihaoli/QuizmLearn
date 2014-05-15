@@ -24,6 +24,8 @@
 @property (strong, nonatomic) NSMutableArray *listPastQuizzes;
 @property (strong, nonatomic) NSMutableArray *listOfQuestions;
 
+@property (strong, nonatomic) NSMutableArray *resultsArray;
+
 - (NSInteger)giveQuizLength;
 
 -(void)prepareQuestionViewController:(QuestionViewController *)qvc toDisplayQuestionAtRow:(NSInteger)row;

@@ -18,11 +18,12 @@
 
 @property (strong,nonatomic) NSMutableArray *questionIDs;
 @property (strong, nonatomic) NSMutableArray *quiz;
+
 @end
 
 @implementation QuizTableViewController
 
-@synthesize popoverController, quiz;
+@synthesize popoverController, quiz, resultsArray;
 
 NSUInteger displayQuestion;
 NSMutableArray *attemptsArray;
@@ -32,6 +33,7 @@ NSNumber *indexNum;
 NSNumber *attemptsUsed;
 NSMutableArray *colours;
 NSInteger fastQuizLength;
+
 
 - (void)awakeFromNib
 {
@@ -167,6 +169,7 @@ NSInteger fastQuizLength;
         _question.numberOfAnswers = [question[@"numberOfAnswers"] intValue];
         _question.sortedQNumber = [question[@"sortedQNumber"] intValue];
         _question.correctAnswer = question[@"correctAnswer"];
+        _question.questionRelease = question[@"questionRelease"];
         
     
         NSMutableArray *rowSecId = [[NSMutableArray alloc] initWithObjects: [NSString stringWithFormat:@"%d",_question.sortedQNumber] , _question.qtype, [question objectId], nil];
@@ -176,6 +179,43 @@ NSInteger fastQuizLength;
         [quiz replaceObjectAtIndex:[_question.questionNumber integerValue] withObject:_question];
         
         NSLog(@"TabBar: Successfully retrieved Question %@.", question[@"questionNumber"]);
+    }
+    
+    
+    PFQuery *checkResultsArray = [PFQuery queryWithClassName:[NSString stringWithFormat:@"%@_Results", self.quizIdentifier]];
+    
+    
+    //get the results from this user
+    //[checkResultsArray selectKeys:@[[NSString stringWithFormat:@"%@", [PFUser currentUser].username]]];
+    NSArray *results = [[NSArray alloc]init];
+    [checkResultsArray orderByAscending:@"createdAt"];
+    [checkResultsArray setLimit:1000];
+    results = [checkResultsArray findObjects];
+    
+    NSLog(@"%lu",[results count]);
+    
+    //RETRIEVE THE VERY FIRST SET OF RESULTS FROM THE USER
+    
+    PFObject *pfResult;
+   
+    for (PFObject *result in results) {
+        
+        if (result[[NSString stringWithFormat:@"%@", [PFUser currentUser].username]] != nil){
+            pfResult = result;
+            break;
+        }
+    }
+    
+    resultsArray = pfResult[[NSString stringWithFormat:@"%@", [PFUser currentUser].username]];
+    
+    NSLog(@"%lu",[resultsArray count]);
+    
+    if (![resultsArray count]){
+        
+        resultsArray = [[NSMutableArray alloc] init];
+        for (int j = 0; j<[self.quiz count]; j++){
+            [resultsArray addObject:@0];
+        }
     }
     
     [self performSelector:@selector(reloadData) withObject:nil afterDelay:1];
@@ -198,8 +238,8 @@ NSInteger fastQuizLength;
             
             Question *q = [quiz objectAtIndex:[question[@"questionNumber"]integerValue]];
             
-            if (q.applicationReleased == NO && [q.qtype isEqualToString:@"1"]){ //if an application question is not released
-                q.applicationReleased = [question[@"questionRelease"] boolValue];
+            if ([q.qtype isEqualToString:@"1"]){ //if an application question is not released
+                q.questionRelease = question[@"questionRelease"];
                 NSLog(@"got newly released question %@", question[@"questionNumber"]);
             }
         }
@@ -304,6 +344,22 @@ NSInteger fastQuizLength;
         
         Question *q = [quiz objectAtIndex:indexPath.row+1];
         
+        
+        if (![[resultsArray objectAtIndex:indexPath.row+1]  isEqual: @0]){
+            questionContentCellLabel.text = @"Question complete";
+             applicationResultCellImage.image =[UIImage imageNamed:@"1.png" ];
+            questionNumberCellLabel.text = [NSString stringWithFormat:@"Question %@",q.questionNumber];
+            applicationResultCellImage.alpha = 0.5;
+            
+            float percentageCorrect = (q.numberOfAnswers-[[resultsArray objectAtIndex:indexPath.row+1] floatValue]+1)/q.numberOfAnswers;
+            
+            progressView.progress = percentageCorrect;
+             attemptsUsedFraction.text = [NSString stringWithFormat:@"%@/%d",[resultsArray objectAtIndex:indexPath.row+1], q.numberOfAnswers];
+            
+        }else{
+        
+        
+        
         if (!q.qAttempts){
 
             progressView.progress = 0;
@@ -326,6 +382,7 @@ NSInteger fastQuizLength;
             
             attemptsUsedFraction.text = [NSString stringWithFormat:@"%@/%d",q.qAttempts, q.numberOfAnswers];
         }
+            
         
         if (q.sortedQNumber == indexPath.row+1 ) {
             
@@ -335,6 +392,8 @@ NSInteger fastQuizLength;
                 questionNumberCellLabel.text = [NSString stringWithFormat:@"Question %@",q.questionNumber];
 
             }
+        }
+            
         }
         
         
@@ -368,18 +427,24 @@ NSInteger fastQuizLength;
         
         if (q.sortedQNumber == indexPath.row+1){
             
-            if ([q.qtype integerValue] ==1 && !q.applicationReleased){
+            if ([q.qtype integerValue] ==1 && [q.questionRelease intValue] == 0){
                 
                 questionNumberCellLabel.text = [NSString stringWithFormat:@"Application %lu ", indexPath.row+1];
                 questionContentCellLabel.text = @"Question not released";
             
                 applicationResultCellImage.alpha = 0.2;
                 
-            } else if (([q.qtype integerValue] ==1) && q.applicationReleased){
+            } else if (([q.qtype integerValue] ==1) && [q.questionRelease intValue]%2 == 1){
 
                 questionNumberCellLabel.text = [NSString stringWithFormat:@"Application %lu ", indexPath.row+1];
                 applicationResultCellImage.alpha = 1;
                 questionContentCellLabel.text =[NSString stringWithFormat:@"%@", q.questionContent];
+
+            } else if (([q.qtype integerValue] ==1) && [q.questionRelease intValue]%2 == 0){
+                questionNumberCellLabel.text = [NSString stringWithFormat:@"Application %lu ", indexPath.row+1];
+                questionContentCellLabel.text =@"Question has been closed";
+                
+                applicationResultCellImage.alpha = 0.5;
 
             }
         }
@@ -450,7 +515,7 @@ NSInteger fastQuizLength;
     
         id mostRecentSubview = realDetail.view.subviews[[realDetail.view.subviews count]-1];
     
-    if ([q.qtype isEqualToString:@"1"] && !q.applicationReleased){
+    if ([q.qtype isEqualToString:@"1"] && [q.questionRelease intValue] == 0){
 
     
         

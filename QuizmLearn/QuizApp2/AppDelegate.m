@@ -27,11 +27,13 @@
     splitViewController.delegate = (id)navigationController.topViewController;
     
     
+    //[application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound];
+    
     //all the url stuff is inherited from the code in Quizm Teach; it does not play a role in this app
-    NSURL *url = (NSURL *)[launchOptions valueForKey:UIApplicationLaunchOptionsURLKey];
-    if(url != nil && [url isFileURL]) {
-        [self.viewController handleOpenURL:url];
-    }
+//    NSURL *url = (NSURL *)[launchOptions valueForKey:UIApplicationLaunchOptionsURLKey];
+//    if(url != nil && [url isFileURL]) {
+//        [self.viewController handleOpenURL:url];
+//    }
     
   
     
@@ -39,17 +41,17 @@
 }
 
 -(BOOL) application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    if (url != nil && [url isFileURL]) {
-        [self.viewController handleOpenURL:url];
-    }
+//    if (url != nil && [url isFileURL]) {
+//        [self.viewController handleOpenURL:url];
+//    }
     return YES;
 }
 
 
 - (BOOL) application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-    if (url != nil && [url isFileURL]) {
-        [self.viewController handleOpenURL:url];
-    }
+//    if (url != nil && [url isFileURL]) {
+//        [self.viewController handleOpenURL:url];
+//    }
     return YES;
 }
 
@@ -76,8 +78,19 @@
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
-    
 }
+
+//- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken{
+//    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+//    [currentInstallation setDeviceTokenFromData:deviceToken];
+//    [currentInstallation saveInBackground];
+//}
+//
+//- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo{
+//    NSLog(@"received a notifcation");
+//    [PFPush handlePush:userInfo];
+//}
+
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {

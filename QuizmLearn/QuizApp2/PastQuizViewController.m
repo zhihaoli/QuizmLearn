@@ -35,7 +35,7 @@
 
     UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
     
-    refresh.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing Quizzes"];
+    refresh.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing Tests"];
     
     [refresh addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13B42" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="doA-Ml-Pq4">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13C1021" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="doA-Ml-Pq4">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
@@ -337,7 +337,7 @@
                                     <constraint firstAttribute="width" constant="145" id="ykZ-aQ-8tb"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="19"/>
-                                <state key="normal" title="Report Choice">
+                                <state key="normal" title="Report Card">
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -353,6 +353,13 @@
                                     <constraint firstAttribute="width" constant="35" id="qpb-ki-A2g"/>
                                 </constraints>
                             </imageView>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jP5-As-E1x">
+                                <rect key="frame" x="210" y="73" width="348" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.86274516582489014" green="0.12156863510608673" blue="0.062745101749897003" alpha="1" colorSpace="deviceRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
@@ -364,6 +371,7 @@
                             <constraint firstItem="nAu-rd-4Dc" firstAttribute="top" secondItem="qgv-WW-nUR" secondAttribute="bottom" constant="7" id="KeC-lP-Xpx"/>
                             <constraint firstItem="PXw-qb-c9E" firstAttribute="leading" secondItem="HXO-CJ-f73" secondAttribute="leading" id="LI4-LE-iP2"/>
                             <constraint firstItem="SWZ-Uy-p7V" firstAttribute="top" secondItem="Fc5-P9-TKF" secondAttribute="bottom" constant="4" id="M7H-qt-ITw"/>
+                            <constraint firstAttribute="centerX" secondItem="jP5-As-E1x" secondAttribute="centerX" id="N8k-mC-E5u"/>
                             <constraint firstAttribute="trailing" secondItem="qgv-WW-nUR" secondAttribute="trailing" constant="19" id="NUX-tX-t0x"/>
                             <constraint firstItem="7TJ-kR-dhx" firstAttribute="top" secondItem="0ZM-QT-hpA" secondAttribute="bottom" constant="48" id="Nwf-Kr-MfM"/>
                             <constraint firstItem="PXw-qb-c9E" firstAttribute="trailing" secondItem="qgv-WW-nUR" secondAttribute="trailing" constant="19" id="ORR-eR-8WW"/>
@@ -416,6 +424,7 @@
                         <outlet property="pageFlipper" destination="HXO-CJ-f73" id="vaG-tW-qHF"/>
                         <outlet property="progressBarBorder" destination="DqS-mU-wMb" id="CM1-0p-mwY"/>
                         <outlet property="qContentLabel" destination="7TJ-kR-dhx" id="dDJ-MX-IW5"/>
+                        <outlet property="questionClosedLabel" destination="jP5-As-E1x" id="135-1D-3nG"/>
                         <outlet property="reportButton" destination="0vo-x7-wyn" id="Vli-B2-15U"/>
                         <outlet property="resultImage" destination="Vwc-93-Ywu" id="XaK-0d-0dP"/>
                         <outlet property="scrollIndicator" destination="Fc5-P9-TKF" id="6v9-zz-qTy"/>
@@ -455,7 +464,7 @@
                                     <segue destination="GCe-cf-aE0" kind="embed" identifier="Embed Quiz List" id="H8B-97-CVA"/>
                                 </connections>
                             </containerView>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please select a Quiz:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U7Z-1H-6OR">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please select a Test:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U7Z-1H-6OR">
                                 <rect key="frame" x="66" y="289" width="636" height="48"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
@@ -481,7 +490,7 @@
                                 <constraints>
                                     <constraint firstAttribute="width" constant="202" id="HiW-qa-uJU"/>
                                 </constraints>
-                                <state key="normal" title="Can't see your Quiz?">
+                                <state key="normal" title="Can't see your Test?">
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>

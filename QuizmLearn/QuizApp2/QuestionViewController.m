@@ -52,6 +52,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *Cbackground;
 @property (weak, nonatomic) IBOutlet UILabel *Abackground;
 @property (weak, nonatomic) IBOutlet UILabel *bBackground;
+@property (weak, nonatomic) IBOutlet UILabel *questionClosedLabel;
 
 @property BOOL *questionFinished;
 
@@ -307,6 +308,9 @@
     
     [self getColoursFromParse];
     
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    [currentInstallation addUniqueObject:[NSString stringWithFormat:@"%@_Teams", self.quizIdentifier] forKey:@"channels"];
+    [currentInstallation saveInBackground];
 }
 
 
@@ -379,7 +383,7 @@
     }else if (![normalbuttonStrings containsObject:sender.titleLabel.text] ){
         [sender setTitle:@"" forState:UIControlStateDisabled];
         [sender setBackgroundImage:[UIImage imageWithCGImage:(__bridge CGImageRef)([UIColor colorWithWhite:1.0 alpha:1])] forState:UIControlStateDisabled];
-        [sender setTitle:@"Report Choice" forState:UIControlStateNormal];
+        [sender setTitle:@"Report Card" forState:UIControlStateNormal];
         [sender setBackgroundImage:[UIImage imageNamed:@"buttonbackground"] forState:UIControlStateNormal];
         [sender setAlpha:0.8];
     }
@@ -418,7 +422,7 @@
     } else if ([segue.identifier isEqualToString: @"goToBigButton"]){
         // Send the BigButton view the button that was assigned to the report question in buttonpressed
         BigButtonViewController *destViewC = [segue destinationViewController];
-        destViewC.currentButton = currentButton;
+        destViewC.currentButton = self.detailItem.reportButtonChoice;
         destViewC.colours = colours;
         
     }
@@ -477,6 +481,18 @@
     
     //Cool flip animation when you change questions
     [UIView transitionWithView:self.view duration:0.6 options:UIViewAnimationOptionTransitionFlipFromRight animations:^{
+        
+        id masternav = self.splitViewController.viewControllers[0];
+        QuizTableViewController *master = (QuizTableViewController *)[masternav topViewController];
+
+        
+        if ([self.detailItem.qtype intValue] == 1 && [self.detailItem.questionRelease intValue]%2 == 0){ //if this is a closed application question
+            self.questionClosedLabel.text = @"Question is closed";
+        }else if ([self.detailItem.qtype intValue] == 0 && ![[master.resultsArray objectAtIndex:[self.detailItem.questionNumber intValue]] isEqual:@0]){
+            self.questionClosedLabel.text = @"Question has previously been completed";
+        }else{
+            self.questionClosedLabel.text = @"";
+        }
         
         
         //Set the Question Content and each answer
@@ -725,8 +741,20 @@
 // Handles all the logistics for enabling buttons, for both kinds of questions
 - (void)EnableButtonsAccordingToButtonsPressed{
     
-    if(self.detailItem.questionFinished ){
-        // If the question is done, both types of questions need all the buttons disabled, and need a restriction on the next button
+    
+    // Prevents enabled next button on the last question
+    if ([self.detailItem.questionNumber integerValue] != (int)quizLength-1 ){
+        
+        [QuestionViewController shouldDisableButton:nextButton should:NO];
+    }
+    
+  
+    
+    
+    
+    
+    if([self.detailItem.qtype intValue] == 0 && self.detailItem.questionFinished ){ //If a RAP question is complete
+
         for(int index = 0; index < 5; index++)
         {
             [QuestionViewController shouldDisableButton:[buttonArray objectAtIndex:index] should:YES];
@@ -735,18 +763,29 @@
             
         }
         
-        // Prevents enabled next button on the last question
-        if ([self.detailItem.questionNumber integerValue] != (int)quizLength-1 ){
-            
-            [QuestionViewController shouldDisableButton:nextButton should:NO];
-        }
+        
+        
+
+    } else if ([self.detailItem.qtype intValue] == 1 && self.detailItem.questionFinished && [self.detailItem.questionRelease intValue]%2 == 1){ //if a report question is finished but not closed, keep the buttons enabled
+        
         
         // if it is a report question, AND the question is finished, you need to enable the report choice button and make sure that the current reportChoicebutton is correct.
-        if (![self qIsTypeNormal]){
-            [QuestionViewController shouldDisableButton:reportButton should:NO];
-            currentButton = self.detailItem.reportButtonChoice;
+        [QuestionViewController shouldDisableButton:reportButton should:NO];
+        currentButton = self.detailItem.reportButtonChoice;
+        //do nothing
+        
+    }else if ([self.detailItem.qtype intValue] == 1 && [self.detailItem.questionRelease intValue]%2 == 0){ // if the report question has closed
+        
+        for(int index = 0; index < 5; index++)
+        {
+            [QuestionViewController shouldDisableButton:[buttonArray objectAtIndex:index] should:YES];
+            UITapGestureRecognizer  *tapGesture = [tapGestureArray objectAtIndex:index];
+            tapGesture.enabled = NO;
+            
         }
-    } else {
+        
+        
+    }else {
         // Question isnt finished, disable buttons if theyve been pressed, dont if they havent been
         [QuestionViewController shouldDisableButton:reportButton should:YES];
         for(int index = 0; index < 5; index++)
@@ -760,6 +799,20 @@
                 UITapGestureRecognizer  *tapGesture = [tapGestureArray objectAtIndex:index];
                 tapGesture.enabled = NO;
             }
+        }
+        
+        id masternav = self.splitViewController.viewControllers[0];
+        QuizTableViewController *master = (QuizTableViewController *)[masternav topViewController];
+        
+        if ([self.detailItem.qtype intValue] == 0 && ![[master.resultsArray objectAtIndex:[self.detailItem.questionNumber intValue]] isEqual:@0]){ //if you've already done the question before
+            for(int index = 0; index < 5; index++)
+            {
+                [QuestionViewController shouldDisableButton:[buttonArray objectAtIndex:index] should:YES];
+                UITapGestureRecognizer  *tapGesture = [tapGestureArray objectAtIndex:index];
+                tapGesture.enabled = NO;
+                NSLog(@"disabled buttons since question was previously completed");
+            }
+            
         }
     }
 }
@@ -970,7 +1023,21 @@
         self.detailItem.questionFinished = YES; // This will turn off all the buttons when calling EnableButtonsAccordingToButtonsPressed
         [self sendAttemptsToParse]; // This will send the button selected to parse
 
+        //clear the previous selection
+        for (int i = 0; i< [self.detailItem.ButtonsPressed count]; i++){
+            [self.detailItem.ButtonsPressed replaceObjectAtIndex:i withObject:@0];
+            UIButton *b = [buttonArray objectAtIndex:i];
+            b.enabled = YES;
+            
+            UITapGestureRecognizer  *tapGesture = [tapGestureArray objectAtIndex:i];
+            tapGesture.enabled = YES;
+        }
+        
+        
+        
+        
         [self.detailItem insertObjectInButtonsPressed:@3 AtLetterSpot:sender.titleLabel.text];
+        
         self.detailItem.reportButtonChoice = currentButton;
         self.attemptsLabel.text = @"";
     }
@@ -1226,7 +1293,7 @@
 
 - (void)splitViewController:(UISplitViewController *)splitController willHideViewController:(UIViewController *)viewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)popoverController
 {
-    barButtonItem.title = NSLocalizedString(@"See Quiz", @"See Quiz");
+    barButtonItem.title = NSLocalizedString(@"See Test", @"See Test");
     [self.navigationItem setLeftBarButtonItem:barButtonItem animated:YES];
     self.masterPopoverController = popoverController;
 }

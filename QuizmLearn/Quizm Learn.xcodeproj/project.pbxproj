@@ -224,7 +224,7 @@
 		2AD7CF3518E6266C002B2246 /* Tab-Bar-Icon---Settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tab-Bar-Icon---Settings.png"; sourceTree = "<group>"; };
 		2AD7CF6418E62E1A002B2246 /* OtherQuizzesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OtherQuizzesTableViewController.h; sourceTree = "<group>"; };
 		2AD7CF6518E62E1A002B2246 /* OtherQuizzesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OtherQuizzesTableViewController.m; sourceTree = "<group>"; };
-		2AD87A251897225B0069F479 /* Quizm Learn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Quizm Learn.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2AD87A251897225B0069F479 /* SmarTEST Student.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SmarTEST Student.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2AD87A281897225B0069F479 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2AD87A2A1897225B0069F479 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		2AD87A2C1897225B0069F479 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -338,7 +338,7 @@
 		2AD87A261897225B0069F479 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2AD87A251897225B0069F479 /* Quizm Learn.app */,
+				2AD87A251897225B0069F479 /* SmarTEST Student.app */,
 				2AD87A461897225B0069F479 /* QuizApp2Tests.xctest */,
 			);
 			name = Products;
@@ -546,7 +546,7 @@
 			);
 			name = QuizApp2;
 			productName = QuizApp2;
-			productReference = 2AD87A251897225B0069F479 /* Quizm Learn.app */;
+			productReference = 2AD87A251897225B0069F479 /* SmarTEST Student.app */;
 			productType = "com.apple.product-type.application";
 		};
 		2AD87A451897225B0069F479 /* QuizApp2Tests */ = {
@@ -858,7 +858,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QuizApp2/QuizApp2-Prefix.pch";
 				INFOPLIST_FILE = "QuizApp2/QuizApp2-Info.plist";
-				PRODUCT_NAME = "Quizm Learn";
+				PRODUCT_NAME = "SmarTEST Student";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
@@ -880,7 +880,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QuizApp2/QuizApp2-Prefix.pch";
 				INFOPLIST_FILE = "QuizApp2/QuizApp2-Info.plist";
-				PRODUCT_NAME = "Quizm Learn";
+				PRODUCT_NAME = "SmarTEST Student";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
