@@ -40,7 +40,7 @@
 
     UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
     
-    refresh.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing Quizzes"];
+    refresh.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing Tests"];
     
     [refresh addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     
@@ -59,7 +59,7 @@
     
     
     PFQuery *query = [PFQuery queryWithClassName:@"ImportedQuizzes"];
-    [query selectKeys: @[@"QuizIdentifier", @"Course", @"QuizName"]];
+    [query selectKeys: @[@"QuizIdentifier", @"Course", @"QuizName", @"isLocked"]];
     [query orderByAscending:@"createdAt"];
     [query findObjectsInBackgroundWithBlock:^(NSArray *pQuiz, NSError *error) {
         if (!error) {
@@ -68,7 +68,7 @@
             
             for (PFObject *quiz in pQuiz) {
                 
-                if ([quiz[@"Course"] isEqualToString:courseName]){
+                if ([quiz[@"Course"] isEqualToString:courseName] && [quiz[@"isLocked"] isEqualToString:@"NO"]){
                     Quiz *_quiz = [[Quiz alloc]init];
                     _quiz.course = quiz[@"Course"];
                     _quiz.quizName = quiz[@"QuizName"];

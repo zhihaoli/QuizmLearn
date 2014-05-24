@@ -70,6 +70,8 @@
     BOOL firstQuestionDisplayed;
     BOOL alertVisible;
     BOOL finishedQuestion;
+    BOOL loggingOutAlert;
+    BOOL submittingAppQ;
     NSString *messagestring;
     NSString *groupName;
     NSInteger quizLength;
@@ -383,7 +385,7 @@
     }else if (![normalbuttonStrings containsObject:sender.titleLabel.text] ){
         [sender setTitle:@"" forState:UIControlStateDisabled];
         [sender setBackgroundImage:[UIImage imageWithCGImage:(__bridge CGImageRef)([UIColor colorWithWhite:1.0 alpha:1])] forState:UIControlStateDisabled];
-        [sender setTitle:@"Report Card" forState:UIControlStateNormal];
+        [sender setTitle:@"Report Choice" forState:UIControlStateNormal];
         [sender setBackgroundImage:[UIImage imageNamed:@"buttonbackground"] forState:UIControlStateNormal];
         [sender setAlpha:0.8];
     }
@@ -488,8 +490,11 @@
         
         if ([self.detailItem.qtype intValue] == 1 && [self.detailItem.questionRelease intValue]%2 == 0){ //if this is a closed application question
             self.questionClosedLabel.text = @"Question is closed";
-        }else if ([self.detailItem.qtype intValue] == 0 && ![[master.resultsArray objectAtIndex:[self.detailItem.questionNumber intValue]] isEqual:@0]){
+        }else if (![[master.resultsArray objectAtIndex:[self.detailItem.questionNumber intValue]] isEqual:@0]){
             self.questionClosedLabel.text = @"Question has previously been completed";
+            
+        }else if ([self.detailItem.qtype intValue] == 1) {
+            self.questionClosedLabel.text = @"Please select an answer and press the Report Choice button when you are ready";
         }else{
             self.questionClosedLabel.text = @"";
         }
@@ -742,6 +747,9 @@
 - (void)EnableButtonsAccordingToButtonsPressed{
     
     
+    
+    
+    
     // Prevents enabled next button on the last question
     if ([self.detailItem.questionNumber integerValue] != (int)quizLength-1 ){
         
@@ -804,7 +812,7 @@
         id masternav = self.splitViewController.viewControllers[0];
         QuizTableViewController *master = (QuizTableViewController *)[masternav topViewController];
         
-        if ([self.detailItem.qtype intValue] == 0 && ![[master.resultsArray objectAtIndex:[self.detailItem.questionNumber intValue]] isEqual:@0]){ //if you've already done the question before
+        if (![[master.resultsArray objectAtIndex:[self.detailItem.questionNumber intValue]] isEqual:@0]){ //if you've already done the question before
             for(int index = 0; index < 5; index++)
             {
                 [QuestionViewController shouldDisableButton:[buttonArray objectAtIndex:index] should:YES];
@@ -815,6 +823,21 @@
             
         }
     }
+    
+    
+    if (submittingAppQ || self.detailItem.appQSubmitted) {
+        for(int index = 0; index < 5; index++)
+        {
+            [QuestionViewController shouldDisableButton:[buttonArray objectAtIndex:index] should:YES];
+            UITapGestureRecognizer  *tapGesture = [tapGestureArray objectAtIndex:index];
+            tapGesture.enabled = NO;
+            
+        }
+        //[QuestionViewController shouldDisableButton:reportButton should:YES];
+        
+        self.questionClosedLabel.text = @"Question has been complete";
+    }
+    
 }
 
 // Handles all the logistics for setting the images (checkmarks and x's, progress bars, and background of button)
@@ -1021,7 +1044,7 @@
         
     } else { // It is a report question
         self.detailItem.questionFinished = YES; // This will turn off all the buttons when calling EnableButtonsAccordingToButtonsPressed
-        [self sendAttemptsToParse]; // This will send the button selected to parse
+        //[self sendAttemptsToParse]; // This will send the button selected to parse
 
         //clear the previous selection
         for (int i = 0; i< [self.detailItem.ButtonsPressed count]; i++){
@@ -1051,10 +1074,20 @@
 }
 
 - (IBAction)reportButtonSelected:(UIButton *)sender {
+    
+    if (self.detailItem.appQSubmitted){
+        [self performSegueWithIdentifier: @"goToBigButton" sender: self];
+    }else{
+    
+    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Is this your final answer?", nil) message:NSLocalizedString(@"This will complete the question and you may not change your answer afterwards", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Yes", nil) otherButtonTitles:NSLocalizedString(@"Cancel",nil), nil] show];
+    
+    }
    
-    [self performSegueWithIdentifier: @"goToBigButton" sender: self];
+    //[self performSegueWithIdentifier: @"goToBigButton" sender: self];
     
 }
+
+
 
 // Next questions redirects to GoToNextQuestions because the swipeleft gesture also needs the same code
 - (IBAction)nextQuestion:(id)sender {
@@ -1123,19 +1156,28 @@
     [self switchQuestion];
     self.attemptsLabel.text = @"";
     
+    self.questionClosedLabel.text = @"Question is complete";
+    
+    
+//    self.reportButton.enabled = NO;
+//    self.reportButton.alpha = 0.2;
+    
 }
 #pragma mark - alertivew stuff
 
 - (IBAction)logOutButtonTapAction:(id)sender {
+    
+    loggingOutAlert = YES;
     
     [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"Logging out will finish your quiz", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"I'm Sure", nil) otherButtonTitles:NSLocalizedString(@"Go Back",nil), nil] show];
 
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-    if (buttonIndex == 0){
+    if (buttonIndex == 0 && loggingOutAlert){
         [PFUser logOut];
         
+        loggingOutAlert = NO;
         loggedIn = NO;
         quizImported = NO;
         firstQuestionDisplayed = NO;
@@ -1158,6 +1200,21 @@
         
         [self presentViewController:logInViewController animated:NO completion:NULL];
 
+    }else if (buttonIndex == 0){
+        
+        submittingAppQ = YES;
+        
+        [self sendAttemptsToParse];
+        
+        self.questionClosedLabel.text = @"Question is complete";
+        
+        [self EnableButtonsAccordingToButtonsPressed];
+//        self.reportButton.enabled = NO;
+//        self.reportButton.alpha = 0.2;
+          //[self performSegueWithIdentifier: @"goToBigButton" sender: self];
+        self.detailItem.appQSubmitted = YES;
+        
+        submittingAppQ = NO;
     }
 }
 

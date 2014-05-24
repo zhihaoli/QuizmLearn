@@ -32,6 +32,7 @@
 @property (nonatomic) BOOL questionFinished;
 @property (nonatomic) BOOL questionStarted;
 @property (nonatomic) BOOL justEntered;
+@property (nonatomic) BOOL appQSubmitted;
 
 @end
 

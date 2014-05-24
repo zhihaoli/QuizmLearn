@@ -105,7 +105,7 @@ NSInteger fastQuizLength;
     
     UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
     
-    refresh.attributedTitle = [[NSAttributedString alloc] initWithString:@"Updating Quiz"];
+    refresh.attributedTitle = [[NSAttributedString alloc] initWithString:@"Updating Test"];
     
     [refresh addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     
@@ -182,31 +182,70 @@ NSInteger fastQuizLength;
     }
     
     
-    PFQuery *checkResultsArray = [PFQuery queryWithClassName:[NSString stringWithFormat:@"%@_Results", self.quizIdentifier]];
+//    PFQuery *checkResultsArray = [PFQuery queryWithClassName:[NSString stringWithFormat:@"%@_Results", self.quizIdentifier]];
+//    
+//    
+//    //get the results from this user
+//    //[checkResultsArray selectKeys:@[[NSString stringWithFormat:@"%@", [PFUser currentUser].username]]];
+//    NSArray *results = [[NSArray alloc]init];
+//    [checkResultsArray orderByAscending:@"createdAt"];
+//    [checkResultsArray setLimit:1000];
+//    results = [checkResultsArray findObjects];
+//    
+//    NSLog(@"%lu",[results count]);
+//    
+//    //RETRIEVE THE VERY FIRST SET OF RESULTS FROM THE USER
+//    
+//    PFObject *pfResult;
+//   
+//    for (PFObject *result in results) {
+//        
+//        if (result[[NSString stringWithFormat:@"%@", [PFUser currentUser].username]] != nil){
+//            pfResult = result;
+//            break;
+//        }
+//    }
     
     
-    //get the results from this user
-    //[checkResultsArray selectKeys:@[[NSString stringWithFormat:@"%@", [PFUser currentUser].username]]];
-    NSArray *results = [[NSArray alloc]init];
-    [checkResultsArray orderByAscending:@"createdAt"];
-    [checkResultsArray setLimit:1000];
-    results = [checkResultsArray findObjects];
+    __block NSMutableArray *groupResult = nil;
+    groupResult = [[NSMutableArray alloc] init];
     
-    NSLog(@"%lu",[results count]);
     
-    //RETRIEVE THE VERY FIRST SET OF RESULTS FROM THE USER
     
-    PFObject *pfResult;
-   
-    for (PFObject *result in results) {
+    
+    PFQuery *results = [PFQuery queryWithClassName:[NSString stringWithFormat:@"%@_Results", self.quizIdentifier]];
+    //[results orderByDescending:@"createdAt"];
+    [results setLimit:1000];
+    
+    NSArray *gResults = [[NSArray alloc] init];
+    gResults = [results findObjects];
+    
+    [groupResult addObject:@0];
+    
+    //Retrieve and send the results to result view
+    for (int i = 0; i<[self.quiz count]; i++){
+        [groupResult addObject:@0];
         
-        if (result[[NSString stringWithFormat:@"%@", [PFUser currentUser].username]] != nil){
-            pfResult = result;
-            break;
+        for (PFObject *result in gResults){
+            if (result[[PFUser currentUser].username] != nil){
+                if (![[result[[PFUser currentUser].username] objectAtIndex:i] isEqual:@0]){
+                    
+                    [groupResult replaceObjectAtIndex:i withObject:[result[[PFUser currentUser].username] objectAtIndex:i]];
+                    
+                }
+            }
         }
     }
     
-    resultsArray = pfResult[[NSString stringWithFormat:@"%@", [PFUser currentUser].username]];
+
+    
+    
+    
+    
+    
+    
+    resultsArray = groupResult;
+    //resultsArray = pfResult[[NSString stringWithFormat:@"%@", [PFUser currentUser].username]];
     
     NSLog(@"%lu",[resultsArray count]);
     
@@ -325,6 +364,12 @@ NSInteger fastQuizLength;
     return v;
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+    return nil;
+}
+
+
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
@@ -400,6 +445,8 @@ NSInteger fastQuizLength;
     }else if (indexPath.section == 1){
         
         
+     
+        
         attemptsUsedFraction.text = @"";
         
         int count = 0;
@@ -412,6 +459,21 @@ NSInteger fastQuizLength;
         }
 
         Question *q = [quiz objectAtIndex:count+indexPath.row+1];
+        
+        
+        if (![[resultsArray objectAtIndex:[q.questionNumber intValue]]  isEqual: @0]){
+            questionContentCellLabel.text = @"Question complete";
+            //applicationResultCellImage.image =[UIImage imageNamed:@"1.png" ];
+            questionNumberCellLabel.text = [NSString stringWithFormat:@"Application %lu ", indexPath.row+1];
+            applicationResultCellImage.alpha = 0.5;
+            
+            //float percentageCorrect = (q.numberOfAnswers-[[resultsArray objectAtIndex:indexPath.row+1] floatValue]+1)/q.numberOfAnswers;
+            
+            progressView.progress = 1;
+            //attemptsUsedFraction.text = [NSString stringWithFormat:@"%@/%d",[resultsArray objectAtIndex:indexPath.row+1], q.numberOfAnswers];
+            NSLog(@"app image is: %@", [resultsArray objectAtIndex:indexPath.row+1]);
+             applicationResultCellImage.image = [UIImage imageNamed:[NSString stringWithFormat:@"1%@.png", [resultsArray objectAtIndex:[q.questionNumber intValue]]]];
+        }else{
         
         if (!q.qAttempts){
             
@@ -449,7 +511,7 @@ NSInteger fastQuizLength;
             }
         }
     }
-
+    }
     return cell;
 }
 
@@ -464,6 +526,10 @@ NSInteger fastQuizLength;
  */
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 40;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    return 0;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{

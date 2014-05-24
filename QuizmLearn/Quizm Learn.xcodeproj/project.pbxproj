@@ -111,6 +111,7 @@
 		2AD87A93189735C00069F479 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AD87A8A189735C00069F479 /* SystemConfiguration.framework */; };
 		2AD87A95189735EF0069F479 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AD87A94189735EF0069F479 /* AudioToolbox.framework */; };
 		2AD87AB21898801D0069F479 /* QuestionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AD87AB11898801D0069F479 /* QuestionViewController.m */; };
+		2ADB5508192C13C5004DDFC6 /* reportE.png in Resources */ = {isa = PBXBuildFile; fileRef = 2ADB5507192C13C5004DDFC6 /* reportE.png */; };
 		2AF37676189AF53C004423BA /* ImportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AF37675189AF53C004423BA /* ImportViewController.m */; };
 		2AF53C60191AFADF00825D3A /* downArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AF53C5E191AFADF00825D3A /* downArrow.png */; };
 		2AF53C61191AFADF00825D3A /* downSimple.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AF53C5F191AFADF00825D3A /* downSimple.png */; };
@@ -257,6 +258,7 @@
 		2AD87A94189735EF0069F479 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		2AD87AB01898801D0069F479 /* QuestionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuestionViewController.h; sourceTree = "<group>"; };
 		2AD87AB11898801D0069F479 /* QuestionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuestionViewController.m; sourceTree = "<group>"; };
+		2ADB5507192C13C5004DDFC6 /* reportE.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reportE.png; sourceTree = "<group>"; };
 		2AF37674189AF53C004423BA /* ImportViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImportViewController.h; sourceTree = "<group>"; };
 		2AF37675189AF53C004423BA /* ImportViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImportViewController.m; sourceTree = "<group>"; };
 		2AF53C5E191AFADF00825D3A /* downArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = downArrow.png; sourceTree = "<group>"; };
@@ -468,6 +470,7 @@
 				2A8F02C118EA31BE0077C265 /* reportB.png */,
 				2A8F02C218EA31BE0077C265 /* reportC.png */,
 				2A8F02C318EA31BE0077C265 /* reportD.png */,
+				2ADB5507192C13C5004DDFC6 /* reportE.png */,
 				2AD7CF3018E6266C002B2246 /* Tab Bar Icon Photoshop.psd */,
 				2AD7CF3118E6266C002B2246 /* Tab-Bar-Icon---Pie-Chart.png */,
 				2AD7CF3218E6266C002B2246 /* Tab-Bar-Icon---Questions30.png */,
@@ -619,6 +622,7 @@
 				2AD7CF5718E6266C002B2246 /* QuizmTeachSplashScreen.png in Resources */,
 				2AF53C61191AFADF00825D3A /* downSimple.png in Resources */,
 				2AD7CF4F18E6266C002B2246 /* QuizmLearnLoginLogo.png in Resources */,
+				2ADB5508192C13C5004DDFC6 /* reportE.png in Resources */,
 				2AD7CF4A18E6266C002B2246 /* bigPD.png in Resources */,
 				2AA8301418A590D200FCC137 /* quizappicon1-2HQ.png in Resources */,
 				2AD87A411897225B0069F479 /* Images.xcassets in Resources */,
