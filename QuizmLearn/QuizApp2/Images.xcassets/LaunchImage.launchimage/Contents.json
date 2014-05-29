@@ -13,6 +13,7 @@
       "idiom" : "ipad",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
+      "filename" : "1024_L_Student.png",
       "scale" : "1x"
     },
     {
@@ -28,6 +29,7 @@
       "idiom" : "ipad",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
+      "filename" : "2048_L_Student.png",
       "scale" : "2x"
     }
   ],

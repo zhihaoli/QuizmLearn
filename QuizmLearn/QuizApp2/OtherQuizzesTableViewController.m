@@ -50,6 +50,9 @@
 
 -(void)refresh {
     
+    
+    if (!self.middleOfQuestion){
+    
     PFQuery *queryUser = [PFUser query];
     [queryUser whereKey:@"username" equalTo:[PFUser currentUser].username];
     
@@ -81,6 +84,7 @@
         }
     }];
     
+    }
     [self performSelector:@selector(stopRefresh) withObject:nil afterDelay:2.5];
     
 }

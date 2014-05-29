@@ -17,6 +17,7 @@
 BOOL isPortrait;
 BOOL isLandscape;
 BOOL isValid;
+UILabel *textLabel;
 
 - (void)viewDidLoad
 {
@@ -28,7 +29,21 @@ BOOL isValid;
     isValid = UIDeviceOrientationIsValidInterfaceOrientation(self.interfaceOrientation);
     
     [self.logInView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"QuizmLearnLoginBG.png"]]];
-    [self.logInView setLogo:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"QuizmLearnLoginLogo2.png"]]];
+    //[self.logInView setLogo:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"QuizmLearnLoginLogo2.png"]]];
+    [self.logInView setLogo:nil];
+
+    textLabel = [[UILabel alloc]init];
+    
+
+
+    textLabel.text = @"Welcome to SmarTEST Student!";
+    
+    [textLabel setBackgroundColor:[UIColor clearColor]];
+    
+    [textLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Thin" size:44]];
+    textLabel.textColor = [UIColor whiteColor];
+
+    
     
     [self.logInView.passwordField setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.8]];
     [self.logInView.usernameField setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.8]];
@@ -36,17 +51,34 @@ BOOL isValid;
     [self.logInView.passwordField setTextColor:[UIColor blackColor]];
     [self.logInView.usernameField setTextColor:[UIColor blackColor]];
     
-    [self.logInView.logInButton setBackgroundImage:[UIImage imageNamed:@"QuizmLearnLoginBG"] forState:UIControlStateNormal];
+        
+    if (isPortrait){
+    [self.logInView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"QuizmLearnLoginBG.png"]]];
+            [textLabel setFrame:CGRectMake(100, 80, 700, 100)];
+        [self.logInView.logInButton setBackgroundImage:[UIImage imageNamed:@"QuizmLearnLoginBG.png"] forState:UIControlStateNormal];
+
+    }else if (isLandscape){
+       [self.logInView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"QuizmLearnLoginBGLandscape.png"]]];
+            [textLabel setFrame:CGRectMake(210, 80, 700, 100)];
+        [self.logInView.logInButton setBackgroundImage:nil forState:UIControlStateNormal];
+
+    }
+    
+        [self.logInView addSubview:textLabel];
 }
 
 - (void) willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     if (toInterfaceOrientation == UIDeviceOrientationPortrait || toInterfaceOrientation == UIDeviceOrientationPortraitUpsideDown) {
         [self.logInView.logo setFrame:CGRectMake(225.0f, 110.0f, 300.0f, 400.0f)];
+         [self.logInView.logInButton setBackgroundImage:[UIImage imageNamed:@"QuizmLearnLoginBG.png"] forState:UIControlStateNormal];
+        
+
         isPortrait = YES;
         isLandscape = NO;
         
     }else{
         [self.logInView.logo setFrame:CGRectMake(355.0f,-20.0f, 300.0f, 400.0f)];
+        [self.logInView.logInButton setBackgroundImage:nil forState:UIControlStateNormal];
         isPortrait = NO;
         isLandscape = YES;
     }
@@ -60,11 +92,31 @@ BOOL isValid;
     
     if(isPortrait) {
         [self.logInView setLogo:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"QuizmLearnLoginLogo2.png"]]];
+        [self.logInView setLogo:nil];
         [self.logInView.logo setFrame:CGRectMake(225.0f, 110.0f, 300.0f, 400.0f)];
-    }else if (isLandscape){
+        
+
+            }else if (isLandscape){
         [self.logInView setLogo:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"QuizmLearnLoginLogo.png"]]];
+                [self.logInView setLogo:nil];
         [self.logInView.logo setFrame:CGRectMake(355.0f,-20.0f, 300.0f, 400.0f)];
+        
     }
+    
+    if (isPortrait){
+        [self.logInView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"QuizmLearnLoginBG.png"]]];
+        [textLabel setFrame:CGRectMake(100, 80, 700, 100)];
+
+        
+    }else if (isLandscape){
+        [self.logInView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"QuizmLearnLoginBGLandscape.png"]]];
+        
+        
+      [textLabel setFrame:CGRectMake(210, 80, 700, 100)];
+
+    }
+    
+
     
 //    [self.logInView.logo setFrame:CGRectMake(225.0f, 110.0f, 300.0f, 400.0f)];
 //    [self.logInView.facebookButton setFrame:CGRectMake(35.0f, 287.0f, 120.0f, 40.0f)];

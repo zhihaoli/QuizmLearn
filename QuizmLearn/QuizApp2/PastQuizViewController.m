@@ -129,7 +129,7 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqual:@"unwindToQuestion"]){
+    if ([segue.identifier isEqualToString:@"unwindToQuestion"]){
         
         NSIndexPath *index = [self.tableView indexPathForCell:sender];
         

@@ -19,6 +19,7 @@
 		2A3725E918FC9B71003D7E15 /* AnimationFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A3725E318FC9B71003D7E15 /* AnimationFrame.m */; };
 		2A3725EA18FC9B71003D7E15 /* FlipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A3725E518FC9B71003D7E15 /* FlipView.m */; };
 		2A3725EB18FC9B71003D7E15 /* GenericAnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A3725E718FC9B71003D7E15 /* GenericAnimationView.m */; };
+		2A4DC5E21933D48500857233 /* QuizmLearnLoginBGLandscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 2A4DC5E11933D48500857233 /* QuizmLearnLoginBGLandscape.png */; };
 		2A80B01918FF2AF7008850F2 /* 1-ext.png in Resources */ = {isa = PBXBuildFile; fileRef = 2A80B01818FF2AF7008850F2 /* 1-ext.png */; };
 		2A85A10818B6D331002722E5 /* Quiz.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A85A10718B6D331002722E5 /* Quiz.m */; };
 		2A85A10A18B6D392002722E5 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A85A10918B6D392002722E5 /* Parse.framework */; };
@@ -40,7 +41,6 @@
 		2AA8301518A590D200FCC137 /* zeroattemptstar.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AA8300C18A590D200FCC137 /* zeroattemptstar.png */; };
 		2AA8301618A590D200FCC137 /* zerofillStar.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AA8300D18A590D200FCC137 /* zerofillStar.png */; };
 		2AB1DCF818A3F97A00E5E08B /* PastQuizViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AB1DCF718A3F97A00E5E08B /* PastQuizViewController.m */; };
-		2AB428F218ECB6F8001B6458 /* 0bar.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB428F118ECB6F8001B6458 /* 0bar.png */; };
 		2AD36D5B1912C4E400D71555 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AD36D5A1912C4E400D71555 /* Reachability.m */; };
 		2AD48D7D190B0802006904B7 /* moreButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AD48D7C190B0802006904B7 /* moreButton.png */; };
 		2AD7CF3618E6266C002B2246 /* 0.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AD7CF0818E6266C002B2246 /* 0.png */; };
@@ -52,7 +52,6 @@
 		2AD7CF3C18E6266C002B2246 /* 3.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AD7CF0E18E6266C002B2246 /* 3.png */; };
 		2AD7CF3D18E6266C002B2246 /* 3bar.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AD7CF0F18E6266C002B2246 /* 3bar.png */; };
 		2AD7CF3E18E6266C002B2246 /* 4.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AD7CF1018E6266C002B2246 /* 4.png */; };
-		2AD7CF3F18E6266C002B2246 /* 4bar.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AD7CF1118E6266C002B2246 /* 4bar.png */; };
 		2AD7CF4018E6266C002B2246 /* 6.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AD7CF1218E6266C002B2246 /* 6.png */; };
 		2AD7CF4118E6266C002B2246 /* A.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AD7CF1318E6266C002B2246 /* A.png */; };
 		2AD7CF4218E6266C002B2246 /* B.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AD7CF1418E6266C002B2246 /* B.png */; };
@@ -153,6 +152,7 @@
 		2A3725E518FC9B71003D7E15 /* FlipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FlipView.m; path = "flip view classes/FlipView.m"; sourceTree = "<group>"; };
 		2A3725E618FC9B71003D7E15 /* GenericAnimationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GenericAnimationView.h; path = "flip view classes/GenericAnimationView.h"; sourceTree = "<group>"; };
 		2A3725E718FC9B71003D7E15 /* GenericAnimationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GenericAnimationView.m; path = "flip view classes/GenericAnimationView.m"; sourceTree = "<group>"; };
+		2A4DC5E11933D48500857233 /* QuizmLearnLoginBGLandscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = QuizmLearnLoginBGLandscape.png; sourceTree = "<group>"; };
 		2A80B01818FF2AF7008850F2 /* 1-ext.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "1-ext.png"; path = "QuizApp2Images/1-ext.png"; sourceTree = SOURCE_ROOT; };
 		2A85A10618B6D331002722E5 /* Quiz.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Quiz.h; sourceTree = "<group>"; };
 		2A85A10718B6D331002722E5 /* Quiz.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Quiz.m; sourceTree = "<group>"; };
@@ -177,7 +177,6 @@
 		2AA8300D18A590D200FCC137 /* zerofillStar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = zerofillStar.png; path = Images.xcassets/zerofillStar.png; sourceTree = "<group>"; };
 		2AB1DCF618A3F97A00E5E08B /* PastQuizViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PastQuizViewController.h; sourceTree = "<group>"; };
 		2AB1DCF718A3F97A00E5E08B /* PastQuizViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PastQuizViewController.m; sourceTree = "<group>"; };
-		2AB428F118ECB6F8001B6458 /* 0bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0bar.png; sourceTree = "<group>"; };
 		2AD36D591912C4E400D71555 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		2AD36D5A1912C4E400D71555 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		2AD48D7C190B0802006904B7 /* moreButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = moreButton.png; path = QuizApp2Images/moreButton.png; sourceTree = SOURCE_ROOT; };
@@ -190,7 +189,6 @@
 		2AD7CF0E18E6266C002B2246 /* 3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 3.png; sourceTree = "<group>"; };
 		2AD7CF0F18E6266C002B2246 /* 3bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 3bar.png; sourceTree = "<group>"; };
 		2AD7CF1018E6266C002B2246 /* 4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 4.png; sourceTree = "<group>"; };
-		2AD7CF1118E6266C002B2246 /* 4bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 4bar.png; sourceTree = "<group>"; };
 		2AD7CF1218E6266C002B2246 /* 6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 6.png; sourceTree = "<group>"; };
 		2AD7CF1318E6266C002B2246 /* A.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = A.png; sourceTree = "<group>"; };
 		2AD7CF1418E6266C002B2246 /* B.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = B.png; sourceTree = "<group>"; };
@@ -439,7 +437,6 @@
 				2AD7CF0E18E6266C002B2246 /* 3.png */,
 				2AD7CF0F18E6266C002B2246 /* 3bar.png */,
 				2AD7CF1018E6266C002B2246 /* 4.png */,
-				2AD7CF1118E6266C002B2246 /* 4bar.png */,
 				2AD7CF1218E6266C002B2246 /* 6.png */,
 				2AD7CF1318E6266C002B2246 /* A.png */,
 				2AD7CF1418E6266C002B2246 /* B.png */,
@@ -451,6 +448,7 @@
 				2AD7CF1E18E6266C002B2246 /* C.png */,
 				2AD7CF1F18E6266C002B2246 /* D.png */,
 				2AD7CF2018E6266C002B2246 /* QuizmLearnLoginBG.png */,
+				2A4DC5E11933D48500857233 /* QuizmLearnLoginBGLandscape.png */,
 				2AD7CF2118E6266C002B2246 /* QuizmLearnLoginLogo.png */,
 				2AD7CF2218E6266C002B2246 /* QuizmLearnLoginLogo2.png */,
 				2AD7CF2318E6266C002B2246 /* QuizmLearnLoginLogoLandscape.png */,
@@ -484,7 +482,6 @@
 				2AA8300A18A590D200FCC137 /* quizappicon1-2.png */,
 				2AA8300B18A590D200FCC137 /* quizappicon1-2HQ.png */,
 				2AA8300C18A590D200FCC137 /* zeroattemptstar.png */,
-				2AB428F118ECB6F8001B6458 /* 0bar.png */,
 				2AFF21B3189C7ACC00FE6F38 /* iosBlueStarIcon.png */,
 				2AFF21B4189C7ACC00FE6F38 /* ok-512.png */,
 				2AFF21B5189C7ACC00FE6F38 /* redX7.png */,
@@ -653,7 +650,6 @@
 				2A8F02C018EA318B0077C265 /* reportA.png in Resources */,
 				2AD7CF5C18E6266C002B2246 /* Screen Shot 2014-02-14 at 10.14.13 AM.png in Resources */,
 				2AD7CF4118E6266C002B2246 /* A.png in Resources */,
-				2AB428F218ECB6F8001B6458 /* 0bar.png in Resources */,
 				2A99664218AAF2B800192BD7 /* navBarColor.png in Resources */,
 				2AD7CF4918E6266C002B2246 /* bigPC.png in Resources */,
 				2AA8301318A590D200FCC137 /* quizappicon1-2.png in Resources */,
@@ -661,6 +657,7 @@
 				2AD7CF6218E6266C002B2246 /* Tab-Bar-Icon---Results.png in Resources */,
 				2AD7CF4C18E6266C002B2246 /* C.png in Resources */,
 				2AD7CF5518E6266C002B2246 /* QuizmTeachLoginLogo2Landscape.png in Resources */,
+				2A4DC5E21933D48500857233 /* QuizmLearnLoginBGLandscape.png in Resources */,
 				2AD7CF4018E6266C002B2246 /* 6.png in Resources */,
 				2AD7CF6018E6266C002B2246 /* Tab-Bar-Icon---Questions30.png in Resources */,
 				2AD7CF3918E6266C002B2246 /* 1bar.png in Resources */,
@@ -670,7 +667,6 @@
 				2AA8301518A590D200FCC137 /* zeroattemptstar.png in Resources */,
 				2AD7CF5218E6266C002B2246 /* QuizmLearnLoginLogoLandscape2.png in Resources */,
 				2AFF21B8189C7ACC00FE6F38 /* redX7.png in Resources */,
-				2AD7CF3F18E6266C002B2246 /* 4bar.png in Resources */,
 				2AD7CF4818E6266C002B2246 /* bigPB.png in Resources */,
 				2A8F02C418EA31BE0077C265 /* reportB.png in Resources */,
 				2AD7CF6118E6266C002B2246 /* Tab-Bar-Icon---Quetsions.png in Resources */,

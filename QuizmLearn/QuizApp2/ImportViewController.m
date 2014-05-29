@@ -48,18 +48,28 @@ NSArray * questions;
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"QuizmLearnLoginBG.png"]]];
-}
+    
+    isPortrait = UIDeviceOrientationIsPortrait(self.interfaceOrientation);
+    isLandscape = UIDeviceOrientationIsLandscape(self.interfaceOrientation);
+
+    if (isPortrait){
+        [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"QuizmLearnLoginBG.png"]]];
+           }else if (isLandscape){
+        [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"QuizmLearnLoginBGLandscape.png"]]];
+       
+    }
+
+   }
 
 - (void)viewWillAppear:(BOOL)animated {
+    
     [super viewWillAppear:animated];
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 }
-
-#pragma mark - ()
 
 
 - (void)didReceiveMemoryWarning
@@ -67,6 +77,7 @@ NSArray * questions;
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
 
 
 #pragma mark - Split view

@@ -40,10 +40,11 @@
 @property (weak, nonatomic) IBOutlet UIView *viewInScrollView;
 
 @property (weak, nonatomic) IBOutlet UIButton *reportButton;
+@property (weak, nonatomic) IBOutlet UIButton *reportCardButton;
 
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
 @property (strong, nonatomic) NSArray * questions;
-@property (strong, nonatomic) NSMutableArray *attempts;
+
 @property (strong, nonatomic) IBOutlet AFKPageFlipper *pageFlipper;
 
 @property (weak, nonatomic) IBOutlet UIImageView *scrollIndicator;
@@ -66,7 +67,7 @@
     BOOL loggedIn;
     BOOL quizImported;
     BOOL logOutFlag;
-    BOOL startedQuiz;
+
     BOOL firstQuestionDisplayed;
     BOOL alertVisible;
     BOOL finishedQuestion;
@@ -88,6 +89,7 @@
     UITapGestureRecognizer *tapGestureRecognizerC;
     UITapGestureRecognizer *tapGestureRecognizerD;
     UITapGestureRecognizer *tapGestureRecognizerE;
+
 }
 
 @synthesize nextButton;
@@ -98,9 +100,12 @@
 @synthesize buttonD;
 @synthesize buttonE;
 @synthesize reportButton;
+@synthesize reportCardButton;
 @synthesize popoverController;
 @synthesize resultImage;
 @synthesize colours;
+@synthesize middleOfQuestion;
+@synthesize startedQuiz;
 
 # pragma mark - initial startup stuff
 
@@ -115,6 +120,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self testInternetConnection];
+    
+    reportButton.titleLabel.text = @"Report Choice";
     
     //Dont enable the nextButton until they've selected a correct answer
     nextButton.enabled = NO;
@@ -385,7 +392,7 @@
     }else if (![normalbuttonStrings containsObject:sender.titleLabel.text] ){
         [sender setTitle:@"" forState:UIControlStateDisabled];
         [sender setBackgroundImage:[UIImage imageWithCGImage:(__bridge CGImageRef)([UIColor colorWithWhite:1.0 alpha:1])] forState:UIControlStateDisabled];
-        [sender setTitle:@"Report Choice" forState:UIControlStateNormal];
+        //[sender setTitle:@"Report Choice" forState:UIControlStateNormal];
         [sender setBackgroundImage:[UIImage imageNamed:@"buttonbackground"] forState:UIControlStateNormal];
         [sender setAlpha:0.8];
     }
@@ -424,6 +431,11 @@
     } else if ([segue.identifier isEqualToString: @"goToBigButton"]){
         // Send the BigButton view the button that was assigned to the report question in buttonpressed
         BigButtonViewController *destViewC = [segue destinationViewController];
+        
+       //WORK ON THIS [pull down previous results so the report card can display even for completed questions]
+        //also, make sure the report button choice gets updated with each choice
+        //finally, make sure autolayout for landscape works for report card
+        
         destViewC.currentButton = self.detailItem.reportButtonChoice;
         destViewC.colours = colours;
         
@@ -473,6 +485,8 @@
 // Called from the master when a new question is pushed, also called for nextbutton. It manages updating all the labels, and calls the neccesarry methods to update the images and buttons
 - (void)switchQuestion{
     
+    
+    
     //Hide or unhide the scroll indicators (depending on number of answers)
     if (self.detailItem.numberOfAnswers>3) {
         
@@ -490,11 +504,17 @@
         
         if ([self.detailItem.qtype intValue] == 1 && [self.detailItem.questionRelease intValue]%2 == 0){ //if this is a closed application question
             self.questionClosedLabel.text = @"Question is closed";
+            [QuestionViewController shouldDisableButton:reportButton should:YES];
         }else if (![[master.resultsArray objectAtIndex:[self.detailItem.questionNumber intValue]] isEqual:@0]){
             self.questionClosedLabel.text = @"Question has previously been completed";
+            self.detailItem.appQSubmitted = YES;
+            self.detailItem.questionFinished = YES;
+            self.attemptsLabel.text = [NSString stringWithFormat:@"Attempts Used: %@",[master.resultsArray objectAtIndex:[self.detailItem.questionNumber intValue]]];
+            [QuestionViewController shouldDisableButton:reportCardButton should:NO];
+            self.detailItem.reportButtonChoice = [master.resultsArray objectAtIndex:[self.detailItem.questionNumber intValue]];
             
         }else if ([self.detailItem.qtype intValue] == 1) {
-            self.questionClosedLabel.text = @"Please select an answer and press the Report Choice button when you are ready";
+            self.questionClosedLabel.text = @"Please select an answer and press the Submit Choice button when you are ready";
         }else{
             self.questionClosedLabel.text = @"";
         }
@@ -656,6 +676,7 @@
         
         //Disable the report button if it is not an Application Question
         [QuestionViewController shouldDisableButton:reportButton should:YES];
+        [QuestionViewController shouldDisableButton:reportCardButton should:YES];
 
         self.progressBarBorder.image = [UIImage imageNamed:@"4bar.png"];
         self.progressBarBorder.alpha = 0.6;
@@ -692,8 +713,12 @@
         }
         if (!self.detailItem.qAttempts) { //If buttons pressed is still Null, create it.
             self.detailItem.ButtonsPressed = [[NSMutableArray alloc] initWithObjects:@0,@0, @0, @0, @0, nil];
+            if (self.detailItem.questionFinished) {
+                
+            }else{
             
             self.attemptsLabel.text = [NSString stringWithFormat:@"Attempts Left: %d", self.detailItem.numberOfAnswers];
+            }
         } else { //Question has been attempted
             self.attemptsLabel.text = [NSString stringWithFormat:@"Attempts Left: %ld", self.detailItem.numberOfAnswers - [self.detailItem.qAttempts integerValue]];
         }
@@ -779,6 +804,7 @@
         
         // if it is a report question, AND the question is finished, you need to enable the report choice button and make sure that the current reportChoicebutton is correct.
         [QuestionViewController shouldDisableButton:reportButton should:NO];
+        [QuestionViewController shouldDisableButton:reportCardButton should:NO];
         currentButton = self.detailItem.reportButtonChoice;
         //do nothing
         
@@ -835,6 +861,8 @@
         }
         //[QuestionViewController shouldDisableButton:reportButton should:YES];
         
+        
+       
         self.questionClosedLabel.text = @"Question has been complete";
     }
     
@@ -895,19 +923,23 @@
         for(int index = 0; index < 5; index++)
         {
             if ([[self.detailItem.ButtonsPressed objectAtIndex:index] isEqualToValue:@1]){
+                
                 flag = true;
                 UIImageView *tempimage = [imageArray objectAtIndex:index];
                 tempimage.image = [UIImage imageNamed:@"redX7.png"];
+                //self.detailItem.middleOfQuestion = YES;
                 
             } else if ([[self.detailItem.ButtonsPressed objectAtIndex:index] isEqualToValue:@2]){
                 flag = true;
                 UIImageView *tempimage = [imageArray objectAtIndex:index];
                
                 tempimage.image = [UIImage imageNamed:@"ok-512.png"];
+                //self.detailItem.middleOfQuestion = NO;
 
             } else if ([[self.detailItem.ButtonsPressed objectAtIndex:index] isEqualToValue:@0]){
                 UIImageView *tempimage = [imageArray objectAtIndex:index];
                 tempimage.image = nil;
+                
             }
       
         }
@@ -949,12 +981,14 @@
 
        [master.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
     }
+    
+ 
 
 }
 
 // Called when a correct answer is pressed or anytime a report answer is chosen
 - (void)sendAttemptsToParse{
-    if (!self.attempts){  //if the attempts array hasnt been made
+    if ([self.attempts count] == 0 || !self.attempts){  //if the attempts array hasnt been made
         
         id masternav = self.splitViewController.viewControllers[0];
         id master = [masternav topViewController];
@@ -968,18 +1002,24 @@
         }
 
     // This is needed so the instructor doesnt try and pull stuff from you when you havent started the quiz
+        
+        
+        
     if (!startedQuiz){
             startedQuiz = YES;
         
-            PFUser *startQuiz = [PFUser currentUser];
-            [startQuiz setObject:@"YES" forKey:@"startedQuiz"];
-            [startQuiz saveInBackground];
+    
         
             // This put your results array on parse!
             PFObject *resultArray = [PFObject objectWithClassName:[NSString stringWithFormat:@"%@_Results",self.quizIdentifier]];
+        
+        
+        
             resultArray [[NSString stringWithFormat:@"%@", groupName]] = self.attempts;
             
             [resultArray save];
+            
+        
         
             //This is to keep track of the original results array, so each update updates the same array rather than creating a new one
             resultsArrayID = [resultArray objectId];
@@ -994,6 +1034,7 @@
         messagestring = currentButton;
     }
 
+    
     [self.attempts replaceObjectAtIndex:[self.detailItem.questionNumber integerValue] withObject:messagestring];
     
     PFQuery *query = [PFQuery queryWithClassName:[NSString stringWithFormat:@"%@_Results",self.quizIdentifier]];
@@ -1001,7 +1042,24 @@
     // Retrieve the object by id
     [query getObjectInBackgroundWithId:[NSString stringWithFormat:@"%@",resultsArrayID] block:^(PFObject *resultArrayUpdate, NSError *error) {
 
-        resultArrayUpdate [[NSString stringWithFormat:@"%@", groupName]] = self.attempts;
+        NSMutableArray *oldResults = [[NSMutableArray alloc]init];
+        
+        if (resultArrayUpdate[[NSString stringWithFormat:@"%@", groupName]] == nil){
+            for (int i = 0; i < (int)quizLength+1; i++ ){
+                [oldResults insertObject:@0 atIndex:i];
+            }
+        }else{
+        
+        oldResults = resultArrayUpdate[[NSString stringWithFormat:@"%@", groupName]];
+        }
+        
+        for (int i=0; i<[oldResults count]; i++){
+            if ([[oldResults objectAtIndex:i] isEqual: @0]){
+                [oldResults replaceObjectAtIndex:i withObject:[self.attempts objectAtIndex:i]];
+            }
+        }
+        
+        resultArrayUpdate [[NSString stringWithFormat:@"%@", groupName]] = oldResults;
         
         [resultArrayUpdate saveInBackground];
     }];
@@ -1036,10 +1094,12 @@
             [self performSelectorInBackground:@selector(sendAttemptsToParse) withObject:nil];
             //[self performSelector:@selector(sendAttemptsToParse) withObject:self afterDelay:0.1];
             [self.detailItem insertObjectInButtonsPressed:@2 AtLetterSpot:sender.titleLabel.text];
+            self.detailItem.middleOfQuestion = NO;
             
         } else {
             [self.detailItem insertObjectInButtonsPressed:@1 AtLetterSpot:sender.titleLabel.text];
             self.attemptsLabel.text = [NSString stringWithFormat:@"Attempts Left: %ld", self.detailItem.numberOfAnswers - [self.detailItem.qAttempts integerValue]];
+            self.detailItem.middleOfQuestion = YES;
         }
         
     } else { // It is a report question
@@ -1076,7 +1136,7 @@
 - (IBAction)reportButtonSelected:(UIButton *)sender {
     
     if (self.detailItem.appQSubmitted){
-        [self performSegueWithIdentifier: @"goToBigButton" sender: self];
+        //[self performSegueWithIdentifier: @"goToBigButton" sender: self];
     }else{
     
     [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Is this your final answer?", nil) message:NSLocalizedString(@"This will complete the question and you may not change your answer afterwards", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Yes", nil) otherButtonTitles:NSLocalizedString(@"Cancel",nil), nil] show];
@@ -1092,6 +1152,12 @@
 // Next questions redirects to GoToNextQuestions because the swipeleft gesture also needs the same code
 - (IBAction)nextQuestion:(id)sender {
     
+    if ([self.detailItem.qtype isEqualToString:@"1"] && !self.detailItem.appQSubmitted && self.detailItem.questionFinished){
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"You haven't submitted your answer yet", nil) message:NSLocalizedString(@"Please go back and press the report choice button if you are ready to submit your answer", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Okay", nil) otherButtonTitles:nil, nil] show];
+    }
+    
+    
+    
     if ([self.detailItem.questionNumber integerValue] != (int)quizLength){
         NSLog(@"The question number is %ld", (long)[self.detailItem.questionNumber integerValue]);
         [self goToNextQuestion];
@@ -1100,6 +1166,10 @@
 }
 
 - (IBAction)swipedRight:(id)sender {
+    
+    if ([self.detailItem.qtype isEqualToString:@"1"] && !self.detailItem.appQSubmitted && self.detailItem.questionFinished){
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"You haven't submitted your answer yet", nil) message:NSLocalizedString(@"Please go back and press the report choice button if you are ready to submit your answer", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Okay", nil) otherButtonTitles:nil, nil] show];
+    }
     
     // Make sure you cant swipe on the last question
     if ([self.detailItem.questionNumber integerValue] != (int)quizLength){
@@ -1141,12 +1211,65 @@
     }
     NSLog(@"The quiz identifier in question view is %@", self.quizIdentifier);
     
+    
+    startedQuiz = NO;
+    
+    
+    
     id masternav = self.splitViewController.viewControllers[0];
     id master = [masternav topViewController];
     
     if ([master isKindOfClass:[QuizTableViewController class]]){
         [self sendQuizIDto:master withidentifier:self.quizIdentifier];
         
+    }
+
+}
+
+- (IBAction)unwindFromLogout:(UIStoryboardSegue *)segue {
+    
+    loggingOutAlert = NO;
+    loggedIn = NO;
+    quizImported = NO;
+    firstQuestionDisplayed = NO;
+    
+    self.navigationItem.rightBarButtonItem.tintColor = UIColorFromRGB(0x007AFF);
+    
+    
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    ILTranslucentView *translucentView = [[ILTranslucentView alloc] initWithFrame:screenRect];
+    //that's it :)
+    
+    //optional:
+    translucentView.translucentAlpha = 1;
+    translucentView.translucentStyle = UIBarStyleDefault;
+    translucentView.translucentTintColor = [UIColor clearColor];
+    translucentView.backgroundColor = [UIColor clearColor];
+    
+    self.navigationItem.title = @"";
+    UILabel *textLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 80, 700, 100)];
+    textLabel.text = [NSString stringWithFormat:@"Press the button on the top right corner to logout"];
+    
+    [textLabel setBackgroundColor:[UIColor clearColor]];
+    [textLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:24]];
+    textLabel.numberOfLines = 3;
+    [textLabel setTextAlignment:NSTextAlignmentCenter];
+    textLabel.textColor = [UIColor blackColor];
+    [translucentView addSubview:textLabel];
+    [self.view addSubview:translucentView];
+
+    
+    
+}
+
+
+- (IBAction)reportCardButtonPressed:(id)sender {
+    
+    if (self.detailItem.reportButtonChoice == nil){
+        
+    }else{
+    
+    [self performSegueWithIdentifier: @"goToBigButton" sender: self];
     }
 }
 
@@ -1169,13 +1292,15 @@
     
     loggingOutAlert = YES;
     
-    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"Logging out will finish your quiz", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"I'm Sure", nil) otherButtonTitles:NSLocalizedString(@"Go Back",nil), nil] show];
+    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"Logging out will finish your test", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"I'm Sure", nil) otherButtonTitles:NSLocalizedString(@"Go Back",nil), nil] show];
 
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     if (buttonIndex == 0 && loggingOutAlert){
         [PFUser logOut];
+        
+        [self.attempts removeAllObjects];
         
         loggingOutAlert = NO;
         loggedIn = NO;
@@ -1200,9 +1325,11 @@
         
         [self presentViewController:logInViewController animated:NO completion:NULL];
 
-    }else if (buttonIndex == 0){
+    }else if (buttonIndex == 0 && [alertView.title isEqualToString:@"Is this your final answer?"]){
         
         submittingAppQ = YES;
+        
+        reportButton.titleLabel.text = @"Report Card";
         
         [self sendAttemptsToParse];
         
@@ -1213,6 +1340,8 @@
 //        self.reportButton.alpha = 0.2;
           //[self performSegueWithIdentifier: @"goToBigButton" sender: self];
         self.detailItem.appQSubmitted = YES;
+        
+        [self SetImagesAccordingToButtonsPressed];
         
         submittingAppQ = NO;
     }
@@ -1368,6 +1497,9 @@
 - (BOOL)logInViewController:(PFLogInViewController *)logInController shouldBeginLogInWithUsername:(NSString *)username password:(NSString *)password {
     // Check if both fields are completed
     if (username && password && username.length && password.length) {
+        
+        
+        
         
         return YES; // Begin login process
     }

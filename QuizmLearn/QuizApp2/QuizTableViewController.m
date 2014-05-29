@@ -78,6 +78,8 @@ NSInteger fastQuizLength;
     
     qvc.quizIdentifier = source.quizIdentifier;
     
+    qvc.startedQuiz = NO;
+    
     [self loadQuizData];
     [self displayFirstQuestion];
     
@@ -110,6 +112,8 @@ NSInteger fastQuizLength;
     [refresh addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     
     self.refreshControl = refresh;
+    
+    
 }
 
 
@@ -126,6 +130,8 @@ NSInteger fastQuizLength;
 
 
 - (void)loadQuizData{
+    
+    
     
     self.navigationItem.title = self.quizIdentifier;
     
@@ -238,8 +244,9 @@ NSInteger fastQuizLength;
     }
     
 
+    QuestionViewController *detail = (QuestionViewController *)[self.splitViewController.viewControllers[1] topViewController];
     
-    
+    [detail.attempts removeAllObjects];
     
     
     
@@ -482,6 +489,12 @@ NSInteger fastQuizLength;
 
         }else{
             
+            if (q.appQSubmitted){
+                questionContentCellLabel.text = @"Question complete";
+            }else{
+                questionContentCellLabel.text = @"Answer not submitted yet!";
+            }
+            
             applicationResultCellImage.image = [UIImage imageNamed:[NSString stringWithFormat:@"1%@.png", q.reportButtonChoice]];
             progressView.progress = 1;
 
@@ -501,6 +514,13 @@ NSInteger fastQuizLength;
                 questionNumberCellLabel.text = [NSString stringWithFormat:@"Application %lu ", indexPath.row+1];
                 applicationResultCellImage.alpha = 1;
                 questionContentCellLabel.text =[NSString stringWithFormat:@"%@", q.questionContent];
+                
+                if (q.appQSubmitted){
+                    questionContentCellLabel.text = @"Question complete";
+                }else if (q.questionFinished){
+                    questionContentCellLabel.text = @"Answer not submitted yet!";
+                }
+
 
             } else if (([q.qtype integerValue] ==1) && [q.questionRelease intValue]%2 == 0){
                 questionNumberCellLabel.text = [NSString stringWithFormat:@"Application %lu ", indexPath.row+1];
@@ -633,18 +653,26 @@ NSInteger fastQuizLength;
 {
     id detailnav = self.splitViewController.viewControllers[1];
     
-    id detail = [detailnav topViewController];
+    QuestionViewController* detail =  (QuestionViewController *)[detailnav topViewController];
     
     if ([detail isKindOfClass:[QuestionViewController class]]){
         NSLog(@"about to prepare question %ld", (long)indexPath.row+1);
         
         int count = 0;
         
+
+        if ([detail.detailItem.qtype isEqualToString:@"1"] && !detail.detailItem.appQSubmitted && detail.detailItem.questionFinished){
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"You haven't submitted your answer yet", nil) message:NSLocalizedString(@"Please go back and press the submit button if you are ready to submit your answer", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Okay", nil) otherButtonTitles:nil, nil] show];
+
+        }
+        
         if (indexPath.section == 1){
             
             count = (int)[self.tableView numberOfRowsInSection:0];
         
         }
+        
+        
         
         [self prepareQuestionViewController:detail toDisplayQuestionAtRow:count+indexPath.row+1];
         
@@ -657,8 +685,32 @@ NSInteger fastQuizLength;
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
     
     if ([segue.identifier isEqualToString:@"goToOtherQuizzes"]){
+        id detailnav = self.splitViewController.viewControllers[1];
+        
+        QuestionViewController* detail =  (QuestionViewController *)[detailnav topViewController];
+         OtherQuizzesTableViewController *destVC = (OtherQuizzesTableViewController *) [segue destinationViewController];
+        
+        for (int i = 1; i<[self.quiz count]; i++){
+        
+            Question *q = [self.quiz objectAtIndex:i];
+            
+        if (q.middleOfQuestion == YES){
+            
+            
+            
+            
+            destVC.middleOfQuestion = YES;
+            NSLog(@"dont go!");
+        }
+        }
+        
+        if (destVC.middleOfQuestion == NO){
+        
+        
+        
         OtherQuizzesTableViewController *destVC = (OtherQuizzesTableViewController *) [segue destinationViewController];
         destVC.listPastQuizzes = self.listPastQuizzes;
+        }
     }
 }
 

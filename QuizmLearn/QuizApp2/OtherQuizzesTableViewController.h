@@ -13,4 +13,5 @@
 @property (strong, nonatomic) NSString * quizIdentifier;
 @property (strong, nonatomic) NSMutableArray *listPastQuizzes;
 
+@property BOOL middleOfQuestion;
 @end

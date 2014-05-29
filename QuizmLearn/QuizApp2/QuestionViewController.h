@@ -31,6 +31,7 @@
 
 @property (strong, nonatomic) NSMutableArray *listPastQuizzes;
 @property (strong, nonatomic) NSMutableArray *colours;
+@property (strong, nonatomic) NSMutableArray *attempts;
 
 @property (strong, nonatomic) Question *detailItem;
 
@@ -38,12 +39,16 @@
 
 @property (weak, nonatomic) IBOutlet UIImageView *bigButtonImage;
 
+@property BOOL startedQuiz;
+
 @property (weak, nonatomic) IBOutlet UIImageView *aImage;
 @property (weak, nonatomic) IBOutlet UIImageView *bImage;
 @property (weak, nonatomic) IBOutlet UIImageView *cImage;
 @property (weak, nonatomic) IBOutlet UIImageView *dImage;
 @property (weak, nonatomic) IBOutlet UIImageView *resultImage;
 @property (weak, nonatomic) IBOutlet UIImageView *eImage;
+
+@property BOOL middleOfQuestion;
 
 - (void)switchQuestion;
 
