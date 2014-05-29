@@ -42,7 +42,7 @@ NSArray * questions;
 {
     [super viewDidLoad];
     
-    self.groupNameWelcome.text = [NSString stringWithFormat:@"Welcome to SmarTEST Student, %@", _groupName];
+    self.groupNameWelcome.text = [NSString stringWithFormat:@"Welcome to SmarTEST Student\n %@", _groupName];
     
 }
 

@@ -5,7 +5,7 @@
       "idiom" : "ipad",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
-      "filename" : "QuizmLearnSplashScreen.png",
+      "filename" : "768_P_Student.png",
       "scale" : "1x"
     },
     {
@@ -21,7 +21,7 @@
       "idiom" : "ipad",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
-      "filename" : "QuizmLearnSplashScreenHQ.png",
+      "filename" : "1536_P_Student.png",
       "scale" : "2x"
     },
     {
