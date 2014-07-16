@@ -13,7 +13,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  
+  self.window.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
     
     //Parse backend ID and key
     [Parse setApplicationId:@"1LlY1hjS7ZV2aEjGcH2eIFhXbaL3tfnhdDaghIuz"

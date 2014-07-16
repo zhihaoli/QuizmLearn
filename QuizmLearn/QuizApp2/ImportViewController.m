@@ -36,8 +36,6 @@ NSArray * questions;
 }
 
 
-
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];

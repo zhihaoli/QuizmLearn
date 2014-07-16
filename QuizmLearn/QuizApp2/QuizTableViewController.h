@@ -34,4 +34,6 @@
 
 - (void)displayFirstQuestion;
 
+- (void)makeTranslucent;
+
 @end

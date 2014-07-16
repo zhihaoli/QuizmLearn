@@ -22,18 +22,22 @@
 @end
 
 @implementation QuizTableViewController
+{
+    NSUInteger displayQuestion;
+    NSMutableArray *attemptsArray;
+    NSUInteger questionsViewed;
+    NSIndexPath *indexPath2;
+    NSNumber *indexNum;
+    NSNumber *attemptsUsed;
+    NSMutableArray *colours;
+    NSInteger fastQuizLength;
+    BOOL allRap;
+    BOOL allApp;
+}
 
 @synthesize popoverController, quiz, resultsArray;
 
-NSUInteger displayQuestion;
-NSMutableArray *attemptsArray;
-NSUInteger questionsViewed;
-NSIndexPath *indexPath2;
-NSNumber *indexNum;
-NSNumber *attemptsUsed;
-NSMutableArray *colours;
-NSInteger fastQuizLength;
-
+#pragma mark - View Methods
 
 - (void)awakeFromNib
 {
@@ -51,40 +55,6 @@ NSInteger fastQuizLength;
     return self;
 }
 
-
-//When the 'more' button is tapped, bring up a popover table of other past quizzes that are avaliable to the student
-- (IBAction)otherQuizzesClicked:(id)sender {
-    
-    
-    OtherQuizzesTableViewController *otherQuizPopover = [[OtherQuizzesTableViewController alloc] init];
-    
-    otherQuizPopover.listPastQuizzes = self.listPastQuizzes;
-   
-    self.popoverController = [[UIPopoverController alloc] initWithContentViewController:otherQuizPopover];
-    
-    [self.popoverController setPopoverContentSize:CGSizeMake(310, 170)];
-    
-    [self.popoverController presentPopoverFromBarButtonItem:self.otherQuizzesButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:NO];
-    
-}
-
-//upon returning from a past quiz selection, reset the views and content with that from the new quiz
-- (IBAction)unwindFromOtherQuizzes:(UIStoryboardSegue *)segue {
-    
-    OtherQuizzesTableViewController *source = [segue sourceViewController];
-    self.quizIdentifier = source.quizIdentifier;
-    
-    QuestionViewController *qvc = (QuestionViewController *)[self.splitViewController.viewControllers[1] topViewController];
-    
-    qvc.quizIdentifier = source.quizIdentifier;
-    
-    qvc.startedQuiz = NO;
-    
-    [self loadQuizData];
-    [self displayFirstQuestion];
-    
-
-}
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -104,21 +74,23 @@ NSInteger fastQuizLength;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
-    
-    refresh.attributedTitle = [[NSAttributedString alloc] initWithString:@"Updating Test"];
-    
-    [refresh addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    
-    self.refreshControl = refresh;
-    
+    //firstTimeInit = YES;
+    [self setUpRefresh];
     
 }
 
+#pragma mark - Refresh Methods
+
+- (void) setUpRefresh{
+    
+    UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
+    refresh.attributedTitle = [[NSAttributedString alloc] initWithString:@"Updating Test"];
+    [refresh addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+    self.refreshControl = refresh;
+}
 
 -(void)refresh {
-
+    
     [self checkForRelease];
     [self performSelector:@selector(stopRefresh) withObject:nil afterDelay:2.0];
     
@@ -128,31 +100,27 @@ NSInteger fastQuizLength;
     [self.refreshControl endRefreshing];
 }
 
+#pragma mark - Data Retrieval
+
 
 - (void)loadQuizData{
     
+    NSLog(@"new thang!");
     
+    int appQ = 0;
+    int rapQ = 0;
     
     self.navigationItem.title = self.quizIdentifier;
     
     self.questionIDs = [[NSMutableArray alloc] init];
     quiz = [[NSMutableArray alloc] init];
     
-    
-    //    still iffy about using a GCD queue here...
-    //    dispatch_queue_t queue;
-    //    queue = dispatch_queue_create("ca.QuizTable.Retrievequestions", NULL);
-    //
-    //    dispatch_async(queue, ^{
     PFQuery *query = [PFQuery queryWithClassName:[NSString stringWithFormat:@"%@",self.quizIdentifier]];
     
-    [query selectKeys: @[@"questionNumber", @"questionContent", @"answerA", @"answerB", @"answerC", @"answerD", @"answerE", @"correctAnswer", @"questionType", @"questionRelease", @"numberOfAnswers", @"sortedQNumber"]];
     [query orderByAscending:@"questionNumber"];
     NSArray *questions = [[NSArray alloc]init];
-    questions = [query findObjects ];
+    questions = [query findObjects];
     
-    
-    NSLog(@"TabBar: Successfully retrieved %lu Questions.", (unsigned long)questions.count);
     
     [self initializeQuizArrayWithThisNumber:[questions count]];
     fastQuizLength = [questions count];
@@ -177,7 +145,12 @@ NSInteger fastQuizLength;
         _question.correctAnswer = question[@"correctAnswer"];
         _question.questionRelease = question[@"questionRelease"];
         
-    
+        if ([_question.qtype isEqualToString:@"0"]){
+            rapQ++;
+        }else{
+            appQ++;
+        }
+        
         NSMutableArray *rowSecId = [[NSMutableArray alloc] initWithObjects: [NSString stringWithFormat:@"%d",_question.sortedQNumber] , _question.qtype, [question objectId], nil];
         
         [self.questionIDs addObject:rowSecId];
@@ -187,40 +160,23 @@ NSInteger fastQuizLength;
         NSLog(@"TabBar: Successfully retrieved Question %@.", question[@"questionNumber"]);
     }
     
-    
-//    PFQuery *checkResultsArray = [PFQuery queryWithClassName:[NSString stringWithFormat:@"%@_Results", self.quizIdentifier]];
-//    
-//    
-//    //get the results from this user
-//    //[checkResultsArray selectKeys:@[[NSString stringWithFormat:@"%@", [PFUser currentUser].username]]];
-//    NSArray *results = [[NSArray alloc]init];
-//    [checkResultsArray orderByAscending:@"createdAt"];
-//    [checkResultsArray setLimit:1000];
-//    results = [checkResultsArray findObjects];
-//    
-//    NSLog(@"%lu",[results count]);
-//    
-//    //RETRIEVE THE VERY FIRST SET OF RESULTS FROM THE USER
-//    
-//    PFObject *pfResult;
-//   
-//    for (PFObject *result in results) {
-//        
-//        if (result[[NSString stringWithFormat:@"%@", [PFUser currentUser].username]] != nil){
-//            pfResult = result;
-//            break;
-//        }
-//    }
-    
+    if (rapQ == 0 && appQ > 0){
+        allApp = true;
+        allRap = false;
+    }else if (rapQ > 0 && appQ == 0){
+        allRap = true;
+        allApp = false;
+    }else if (rapQ > 0 && appQ > 0){
+        allApp = false;
+        allRap = false;
+    }
     
     __block NSMutableArray *groupResult = nil;
     groupResult = [[NSMutableArray alloc] init];
     
-    
-    
-    
+    //Get any results if they exist to see if the question has been previously attempted
     PFQuery *results = [PFQuery queryWithClassName:[NSString stringWithFormat:@"%@_Results", self.quizIdentifier]];
-    //[results orderByDescending:@"createdAt"];
+    
     [results setLimit:1000];
     
     NSArray *gResults = [[NSArray alloc] init];
@@ -243,18 +199,11 @@ NSInteger fastQuizLength;
         }
     }
     
-
     QuestionViewController *detail = (QuestionViewController *)[self.splitViewController.viewControllers[1] topViewController];
     
     [detail.attempts removeAllObjects];
     
-    
-    
-    
     resultsArray = groupResult;
-    //resultsArray = pfResult[[NSString stringWithFormat:@"%@", [PFUser currentUser].username]];
-    
-    NSLog(@"%lu",[resultsArray count]);
     
     if (![resultsArray count]){
         
@@ -264,16 +213,13 @@ NSInteger fastQuizLength;
         }
     }
     
-    [self performSelector:@selector(reloadData) withObject:nil afterDelay:1];
     
-}
-
--(void) reloadData {
+    
     [self.tableView reloadData];
 }
 
+
 - (void) checkForRelease{
-    
     
     PFQuery *releaseQuery = [PFQuery queryWithClassName:[NSString stringWithFormat:@"%@", self.quizIdentifier]];
     
@@ -292,9 +238,12 @@ NSInteger fastQuizLength;
         
     }];
     
-     [self performSelector:@selector(reloadData) withObject:nil afterDelay:1];
+    //[self performSelector:@selector(reloadData) withObject:nil afterDelay:1];
+    [self.tableView reloadData];
 }
 
+
+#pragma mark - Additional Set Up
 
 - (void)displayFirstQuestion{
     
@@ -309,7 +258,6 @@ NSInteger fastQuizLength;
 
 //This method returns the quiz length; this info needs to be in the right place at the right time
 - (NSInteger)giveQuizLength{
-  //  NSLog(@"qtvc gave quiz count %d", [quiz count]);
     return fastQuizLength;
 }
 
@@ -326,6 +274,8 @@ NSInteger fastQuizLength;
 {
     [super didReceiveMemoryWarning];
 }
+
+
 
 #pragma mark - Table view data source
 
@@ -390,7 +340,7 @@ NSInteger fastQuizLength;
     
     UILabel *attemptsUsedFraction = (UILabel *)[cell viewWithTag:5];
     
-     progressView.tintColor = UIColorFromRGB(0x4CD964);
+    progressView.tintColor = UIColorFromRGB(0x4CD964);
     
     if (indexPath.section == 0){
         
@@ -399,60 +349,57 @@ NSInteger fastQuizLength;
         
         if (![[resultsArray objectAtIndex:indexPath.row+1]  isEqual: @0]){
             questionContentCellLabel.text = @"Question complete";
-             applicationResultCellImage.image =[UIImage imageNamed:@"1.png" ];
+            applicationResultCellImage.image =[UIImage imageNamed:@"1.png" ];
             questionNumberCellLabel.text = [NSString stringWithFormat:@"Question %@",q.questionNumber];
             applicationResultCellImage.alpha = 0.5;
             
             float percentageCorrect = (q.numberOfAnswers-[[resultsArray objectAtIndex:indexPath.row+1] floatValue]+1)/q.numberOfAnswers;
             
             progressView.progress = percentageCorrect;
-             attemptsUsedFraction.text = [NSString stringWithFormat:@"%@/%d",[resultsArray objectAtIndex:indexPath.row+1], q.numberOfAnswers];
-            
-        }else{
-        
-        
-        
-        if (!q.qAttempts){
-
-            progressView.progress = 0;
-            
-            applicationResultCellImage.image =[UIImage imageNamed:@"NormalQuestion2.png" ];
-            
-            applicationResultCellImage.alpha = 1;
-            
-            attemptsUsedFraction.text = [NSString stringWithFormat:@"0/%d", q.numberOfAnswers];
+            attemptsUsedFraction.text = [NSString stringWithFormat:@"%@/%d",[resultsArray objectAtIndex:indexPath.row+1], q.numberOfAnswers];
             
         }else{
             
-            applicationResultCellImage.image =[UIImage imageNamed:@"1.png" ];
-
-            float percentageCorrect = (q.numberOfAnswers-[q.qAttempts floatValue]+1)/q.numberOfAnswers;
             
-            progressView.progress = percentageCorrect;
             
-            applicationResultCellImage.alpha = 1;
-            
-            attemptsUsedFraction.text = [NSString stringWithFormat:@"%@/%d",q.qAttempts, q.numberOfAnswers];
-        }
-            
-        
-        if (q.sortedQNumber == indexPath.row+1 ) {
-            
-            if ([q.qtype integerValue] == 0){ // Rap question
+            if (!q.qAttempts){
                 
-                questionContentCellLabel.text = q.questionContent;
-                questionNumberCellLabel.text = [NSString stringWithFormat:@"Question %@",q.questionNumber];
-
+                progressView.progress = 0;
+                
+                applicationResultCellImage.image =[UIImage imageNamed:@"0" ];
+                
+                applicationResultCellImage.alpha = 1;
+                
+                attemptsUsedFraction.text = [NSString stringWithFormat:@"0/%d", q.numberOfAnswers];
+                
+            }else{
+                
+                applicationResultCellImage.image =[UIImage imageNamed:@"1.png" ];
+                
+                float percentageCorrect = (q.numberOfAnswers-[q.qAttempts floatValue]+1)/q.numberOfAnswers;
+                
+                progressView.progress = percentageCorrect;
+                
+                applicationResultCellImage.alpha = 1;
+                
+                attemptsUsedFraction.text = [NSString stringWithFormat:@"%@/%d",q.qAttempts, q.numberOfAnswers];
             }
-        }
+            
+            
+            if (q.sortedQNumber == indexPath.row+1 ) {
+                
+                if ([q.qtype integerValue] == 0){ // Rap question
+                    
+                    questionContentCellLabel.text = q.questionContent;
+                    questionNumberCellLabel.text = [NSString stringWithFormat:@"Question %@",q.questionNumber];
+                    
+                }
+            }
             
         }
         
         
     }else if (indexPath.section == 1){
-        
-        
-     
         
         attemptsUsedFraction.text = @"";
         
@@ -464,88 +411,104 @@ NSInteger fastQuizLength;
                 count++; //number of RAP questions
             }
         }
-
+        
         Question *q = [quiz objectAtIndex:count+indexPath.row+1];
         
         
         if (![[resultsArray objectAtIndex:[q.questionNumber intValue]]  isEqual: @0]){
             questionContentCellLabel.text = @"Question complete";
-            //applicationResultCellImage.image =[UIImage imageNamed:@"1.png" ];
-            questionNumberCellLabel.text = [NSString stringWithFormat:@"Application %lu ", indexPath.row+1];
+            
+            questionNumberCellLabel.text = [NSString stringWithFormat:@"Application %d ", indexPath.row+1];
             applicationResultCellImage.alpha = 0.5;
             
-            //float percentageCorrect = (q.numberOfAnswers-[[resultsArray objectAtIndex:indexPath.row+1] floatValue]+1)/q.numberOfAnswers;
-            
             progressView.progress = 1;
-            //attemptsUsedFraction.text = [NSString stringWithFormat:@"%@/%d",[resultsArray objectAtIndex:indexPath.row+1], q.numberOfAnswers];
+            
             NSLog(@"app image is: %@", [resultsArray objectAtIndex:indexPath.row+1]);
-             applicationResultCellImage.image = [UIImage imageNamed:[NSString stringWithFormat:@"1%@.png", [resultsArray objectAtIndex:[q.questionNumber intValue]]]];
-        }else{
-        
-        if (!q.qAttempts){
-            
-            applicationResultCellImage.image = [UIImage imageNamed:@"ReportQuestion3.png"];
-            progressView.progress = 0;
-
+            applicationResultCellImage.image = [UIImage imageNamed:[NSString stringWithFormat:@"1%@.png", [resultsArray objectAtIndex:[q.questionNumber intValue]]]];
         }else{
             
-            if (q.appQSubmitted){
-                questionContentCellLabel.text = @"Question complete";
+            if (!q.qAttempts){
+                
+                applicationResultCellImage.image = [UIImage imageNamed:@"0"];
+                progressView.progress = 0;
+                
             }else{
-                questionContentCellLabel.text = @"Answer not submitted yet!";
-            }
-            
-            applicationResultCellImage.image = [UIImage imageNamed:[NSString stringWithFormat:@"1%@.png", q.reportButtonChoice]];
-            progressView.progress = 1;
-
-        }
-        
-        if (q.sortedQNumber == indexPath.row+1){
-            
-            if ([q.qtype integerValue] ==1 && [q.questionRelease intValue] == 0){
-                
-                questionNumberCellLabel.text = [NSString stringWithFormat:@"Application %lu ", indexPath.row+1];
-                questionContentCellLabel.text = @"Question not released";
-            
-                applicationResultCellImage.alpha = 0.2;
-                
-            } else if (([q.qtype integerValue] ==1) && [q.questionRelease intValue]%2 == 1){
-
-                questionNumberCellLabel.text = [NSString stringWithFormat:@"Application %lu ", indexPath.row+1];
-                applicationResultCellImage.alpha = 1;
-                questionContentCellLabel.text =[NSString stringWithFormat:@"%@", q.questionContent];
                 
                 if (q.appQSubmitted){
                     questionContentCellLabel.text = @"Question complete";
-                }else if (q.questionFinished){
+                }else{
                     questionContentCellLabel.text = @"Answer not submitted yet!";
                 }
-
-
-            } else if (([q.qtype integerValue] ==1) && [q.questionRelease intValue]%2 == 0){
-                questionNumberCellLabel.text = [NSString stringWithFormat:@"Application %lu ", indexPath.row+1];
-                questionContentCellLabel.text =@"Question has been closed";
                 
-                applicationResultCellImage.alpha = 0.5;
-
+                applicationResultCellImage.image = [UIImage imageNamed:[NSString stringWithFormat:@"1%@.png", q.reportButtonChoice]];
+                progressView.progress = 1;
+                
+            }
+            
+            if (q.sortedQNumber == indexPath.row+1){
+                
+                if ([q.qtype integerValue] ==1 && [q.questionRelease intValue] == 0){
+                    
+                    questionNumberCellLabel.text = [NSString stringWithFormat:@"Application %d ", indexPath.row+1];
+                    questionContentCellLabel.text = @"Question not released";
+                    
+                    applicationResultCellImage.alpha = 0.2;
+                    
+                } else if (([q.qtype integerValue] ==1) && [q.questionRelease intValue]%2 == 1){
+                    
+                    questionNumberCellLabel.text = [NSString stringWithFormat:@"Application %d ", indexPath.row+1];
+                    applicationResultCellImage.alpha = 1;
+                    questionContentCellLabel.text =[NSString stringWithFormat:@"%@", q.questionContent];
+                    
+                    if (q.appQSubmitted){
+                        questionContentCellLabel.text = @"Question complete";
+                    }else if (q.questionFinished){
+                        questionContentCellLabel.text = @"Answer not submitted yet!";
+                    }
+                    
+                    
+                } else if (([q.qtype integerValue] ==1) && [q.questionRelease intValue]%2 == 0){
+                    questionNumberCellLabel.text = [NSString stringWithFormat:@"Application %d ", indexPath.row+1];
+                    questionContentCellLabel.text =@"Question has been closed";
+                    
+                    applicationResultCellImage.alpha = 0.5;
+                    
+                }
             }
         }
-    }
     }
     return cell;
 }
 
+- (void)makeTranslucent {
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    ILTranslucentView *translucentView = [[ILTranslucentView alloc] initWithFrame:screenRect];
+    
+    translucentView.translucentAlpha = 1;
+    translucentView.translucentStyle = UIBarStyleDefault;
+    translucentView.translucentTintColor = [UIColor clearColor];
+    translucentView.backgroundColor = [UIColor clearColor];
+    
+    self.navigationItem.title = @"";
+    
+    
+    self.navigationItem.rightBarButtonItem.title = @"";
+    
+    [self.view addSubview:translucentView];
+}
 
-/*
- // Override to support conditional rearranging of the table view.
- - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
- {
- // Return NO if you do not want the item to be re-orderable.
- return YES;
- }
- */
+
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    
+    //if they are all of one type, set the header for the empty section to 0
+    if (section == 0 && allApp && !allRap){
+        return 0;
+    }else if (section == 1 && allRap && !allApp){
+        return 0;
+    }
+
     return 40;
+
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
@@ -559,18 +522,13 @@ NSInteger fastQuizLength;
 #pragma mark - Navigation
 
 
--(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-}
-
-
 -(void)prepareQuestionViewController:(QuestionViewController *)qvc toDisplayQuestionAtRow:(NSInteger)row
 {
     int numRowsInSec0 = (int)[self.tableView numberOfRowsInSection:0];
     BOOL isSec0 = ( row > numRowsInSec0 ? NO : YES);
     
     int rowToSelect = (int)row;
-
+    
     if (!isSec0) {
         rowToSelect = (int)row-numRowsInSec0;
     }
@@ -582,10 +540,10 @@ NSInteger fastQuizLength;
     }
     
     Question *q = [quiz objectAtIndex:row];
-
+    
     qvc.detailItem = q;
     qvc.navigationItem.title = ( [q.qtype isEqualToString:@"0"] ? [NSString stringWithFormat:@"Question %d", q.sortedQNumber] :[NSString stringWithFormat:@"Application %d", q.sortedQNumber ]);
-  
+    
     [qvc.navigationItem.rightBarButtonItem setTintColor:UIColorFromRGB(0x007AFE)];
     
     [qvc.scrollView setContentOffset:CGPointZero animated:NO];
@@ -599,45 +557,42 @@ NSInteger fastQuizLength;
     
     UIViewController *realDetail = detail;
     
-        id mostRecentSubview = realDetail.view.subviews[[realDetail.view.subviews count]-1];
+    id mostRecentSubview = realDetail.view.subviews[[realDetail.view.subviews count]-1];
     
     if ([q.qtype isEqualToString:@"1"] && [q.questionRelease intValue] == 0){
-
-    
         
-    // If the last subview isnt a translucent view, make it one!
-    
-    if (![mostRecentSubview isKindOfClass:[ILTranslucentView class]]){
-        CGRect screenRect = [[UIScreen mainScreen] bounds];
-        ILTranslucentView *translucentView = [[ILTranslucentView alloc] initWithFrame:screenRect];
-        //that's it :)
         
-        //optional:
-        translucentView.translucentAlpha = 1;
-        translucentView.translucentStyle = UIBarStyleDefault;
-        translucentView.translucentTintColor = [UIColor clearColor];
-        translucentView.backgroundColor = [UIColor clearColor];
         
-       
-        CGRect rect = CGRectMake(370, 200, 700, 100);
+        // If the last subview isnt a translucent view, make it one!
         
-        //realDetail.navigationItem.title = @"Welcome";
-        UILabel *textLabel = [[UILabel alloc]initWithFrame:rect];
-        
-        textLabel.center = realDetail.view.center;
-        textLabel.text = @"This Question has not been released by the instructor yet";
-        
-        [textLabel setBackgroundColor:[UIColor clearColor]];
-        [textLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:24]];
-        textLabel.numberOfLines = 3;
-        [textLabel setTextAlignment:NSTextAlignmentCenter];
-        textLabel.textColor = [UIColor blackColor];
-        [translucentView addSubview:textLabel];
-        [realDetail.view addSubview:translucentView];
-        [UIView transitionWithView:realDetail.view duration:0.37 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+        if (![mostRecentSubview isKindOfClass:[ILTranslucentView class]]){
+            CGRect screenRect = [[UIScreen mainScreen] bounds];
+            ILTranslucentView *translucentView = [[ILTranslucentView alloc] initWithFrame:screenRect];
             
-        }completion:nil];
-    }
+            translucentView.translucentAlpha = 1;
+            translucentView.translucentStyle = UIBarStyleDefault;
+            translucentView.translucentTintColor = [UIColor clearColor];
+            translucentView.backgroundColor = [UIColor clearColor];
+            
+            
+            CGRect rect = CGRectMake(370, 200, 700, 100);
+            
+            UILabel *textLabel = [[UILabel alloc]initWithFrame:rect];
+            
+            textLabel.center = realDetail.view.center;
+            textLabel.text = @"This Question has not been released by the instructor yet";
+            
+            [textLabel setBackgroundColor:[UIColor clearColor]];
+            [textLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:24]];
+            textLabel.numberOfLines = 3;
+            [textLabel setTextAlignment:NSTextAlignmentCenter];
+            textLabel.textColor = [UIColor blackColor];
+            [translucentView addSubview:textLabel];
+            [realDetail.view addSubview:translucentView];
+            [UIView transitionWithView:realDetail.view duration:0.37 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+                
+            }completion:nil];
+        }
         
     }else if (q.applicationReleased || [q.qtype isEqualToString:@"0"]){
         
@@ -647,7 +602,6 @@ NSInteger fastQuizLength;
     }
 }
 
-#pragma mark - UITableViewDelagate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -660,56 +614,81 @@ NSInteger fastQuizLength;
         
         int count = 0;
         
-
+        
         if ([detail.detailItem.qtype isEqualToString:@"1"] && !detail.detailItem.appQSubmitted && detail.detailItem.questionFinished){
             [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"You haven't submitted your answer yet", nil) message:NSLocalizedString(@"Please go back and press the submit button if you are ready to submit your answer", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Okay", nil) otherButtonTitles:nil, nil] show];
-
+            
         }
         
         if (indexPath.section == 1){
             
             count = (int)[self.tableView numberOfRowsInSection:0];
-        
+            
         }
-        
-        
         
         [self prepareQuestionViewController:detail toDisplayQuestionAtRow:count+indexPath.row+1];
         
         [detail switchQuestion];
     }
-   
+    
+}
+
+
+
+//When the 'more' button is tapped, bring up a popover table of other past quizzes that are avaliable to the student
+- (IBAction)otherQuizzesClicked:(id)sender {
+    
+    
+    OtherQuizzesTableViewController *otherQuizPopover = [[OtherQuizzesTableViewController alloc] init];
+    
+    otherQuizPopover.listPastQuizzes = self.listPastQuizzes;
+    
+    self.popoverController = [[UIPopoverController alloc] initWithContentViewController:otherQuizPopover];
+    
+    [self.popoverController setPopoverContentSize:CGSizeMake(310, 170)];
+    
+    [self.popoverController presentPopoverFromBarButtonItem:self.otherQuizzesButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:NO];
+    
+}
+
+//upon returning from a past quiz selection, reset the views and content with that from the new quiz
+- (IBAction)unwindFromOtherQuizzes:(UIStoryboardSegue *)segue {
+    
+    OtherQuizzesTableViewController *source = [segue sourceViewController];
+    self.quizIdentifier = source.quizIdentifier;
+    
+    QuestionViewController *qvc = (QuestionViewController *)[self.splitViewController.viewControllers[1] topViewController];
+    
+    qvc.quizIdentifier = source.quizIdentifier;
+    
+    qvc.startedQuiz = NO;
+    
+    [self loadQuizData];
+    [self displayFirstQuestion];
+    
 }
 
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
     
     if ([segue.identifier isEqualToString:@"goToOtherQuizzes"]){
-        id detailnav = self.splitViewController.viewControllers[1];
         
-        QuestionViewController* detail =  (QuestionViewController *)[detailnav topViewController];
-         OtherQuizzesTableViewController *destVC = (OtherQuizzesTableViewController *) [segue destinationViewController];
+        OtherQuizzesTableViewController *destVC = (OtherQuizzesTableViewController *) [segue destinationViewController];
         
         for (int i = 1; i<[self.quiz count]; i++){
-        
+            
             Question *q = [self.quiz objectAtIndex:i];
             
-        if (q.middleOfQuestion == YES){
-            
-            
-            
-            
-            destVC.middleOfQuestion = YES;
-            NSLog(@"dont go!");
-        }
+            if (q.middleOfQuestion == YES){
+                
+                destVC.middleOfQuestion = YES;
+            }
         }
         
         if (destVC.middleOfQuestion == NO){
-        
-        
-        
-        OtherQuizzesTableViewController *destVC = (OtherQuizzesTableViewController *) [segue destinationViewController];
-        destVC.listPastQuizzes = self.listPastQuizzes;
+
+            OtherQuizzesTableViewController *destVC = (OtherQuizzesTableViewController *) [segue destinationViewController];
+            destVC.listPastQuizzes = self.listPastQuizzes;
         }
     }
 }

@@ -36,8 +36,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
 
+}
+
+-(void)setUpRefresh{
     UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
     
     refresh.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing Tests"];
@@ -45,7 +47,6 @@
     [refresh addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     
     self.refreshControl = refresh;
-
 }
 
 -(void)refresh {
