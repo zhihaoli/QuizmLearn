@@ -117,6 +117,8 @@
 		2AFF21B6189C7ACC00FE6F38 /* iosBlueStarIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AFF21B3189C7ACC00FE6F38 /* iosBlueStarIcon.png */; };
 		2AFF21B7189C7ACC00FE6F38 /* ok-512.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AFF21B4189C7ACC00FE6F38 /* ok-512.png */; };
 		2AFF21B8189C7ACC00FE6F38 /* redX7.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AFF21B5189C7ACC00FE6F38 /* redX7.png */; };
+		7544523519783A5700318CBA /* SmartTestStudent_trans.png in Resources */ = {isa = PBXBuildFile; fileRef = 7544523419783A5700318CBA /* SmartTestStudent_trans.png */; };
+		75DEF26919783D2800AEEED6 /* InitialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 75DEF26819783D2800AEEED6 /* InitialViewController.m */; };
 		A720766918B303A500EC4267 /* PastQuizTable.m in Sources */ = {isa = PBXBuildFile; fileRef = A720766818B303A500EC4267 /* PastQuizTable.m */; };
 		A755332818B712D4001B9306 /* MyLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A755332718B712D4001B9306 /* MyLoginViewController.m */; };
 		A755333D18B97B14001B9306 /* BigButtonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A755333C18B97B14001B9306 /* BigButtonViewController.m */; };
@@ -263,6 +265,9 @@
 		2AFF21B3189C7ACC00FE6F38 /* iosBlueStarIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iosBlueStarIcon.png; path = Images.xcassets/iosBlueStarIcon.png; sourceTree = "<group>"; };
 		2AFF21B4189C7ACC00FE6F38 /* ok-512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ok-512.png"; path = "Images.xcassets/ok-512.png"; sourceTree = "<group>"; };
 		2AFF21B5189C7ACC00FE6F38 /* redX7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = redX7.png; path = Images.xcassets/redX7.png; sourceTree = "<group>"; };
+		7544523419783A5700318CBA /* SmartTestStudent_trans.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SmartTestStudent_trans.png; path = "Icons/Smart Test Logo sizes/SmartTestStudent_trans.png"; sourceTree = SOURCE_ROOT; };
+		75DEF26719783D2800AEEED6 /* InitialViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InitialViewController.h; path = ../InitialViewController.h; sourceTree = "<group>"; };
+		75DEF26819783D2800AEEED6 /* InitialViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InitialViewController.m; path = ../InitialViewController.m; sourceTree = "<group>"; };
 		A720766718B303A500EC4267 /* PastQuizTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PastQuizTable.h; sourceTree = "<group>"; };
 		A720766818B303A500EC4267 /* PastQuizTable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PastQuizTable.m; sourceTree = "<group>"; };
 		A755332618B712D4001B9306 /* MyLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyLoginViewController.h; sourceTree = "<group>"; };
@@ -415,6 +420,7 @@
 				2A89240F18EF23090051B383 /* ReportQuestion3.png */,
 				2AF53C5E191AFADF00825D3A /* downArrow.png */,
 				2AF53C5F191AFADF00825D3A /* downSimple.png */,
+				7544523419783A5700318CBA /* SmartTestStudent_trans.png */,
 				2AD7CF0818E6266C002B2246 /* 0.png */,
 				2A89240C18EF21050051B383 /* reportQuestionSmall.png */,
 				2A89240818EF1F050051B383 /* NormalQuestion.png */,
@@ -492,6 +498,8 @@
 			children = (
 				2AB1DCF618A3F97A00E5E08B /* PastQuizViewController.h */,
 				2AB1DCF718A3F97A00E5E08B /* PastQuizViewController.m */,
+				75DEF26719783D2800AEEED6 /* InitialViewController.h */,
+				75DEF26819783D2800AEEED6 /* InitialViewController.m */,
 				2AD7CF6418E62E1A002B2246 /* OtherQuizzesTableViewController.h */,
 				2AD7CF6518E62E1A002B2246 /* OtherQuizzesTableViewController.m */,
 				2A0DACDA18A2F6DC00FF995D /* QuizTableViewController.h */,
@@ -650,6 +658,7 @@
 				2AD7CF4118E6266C002B2246 /* A.png in Resources */,
 				2A99664218AAF2B800192BD7 /* navBarColor.png in Resources */,
 				2AD7CF4918E6266C002B2246 /* bigPC.png in Resources */,
+				7544523519783A5700318CBA /* SmartTestStudent_trans.png in Resources */,
 				2AA8301318A590D200FCC137 /* quizappicon1-2.png in Resources */,
 				2A89241118EF23090051B383 /* ReportQuestion3.png in Resources */,
 				2AD7CF6218E6266C002B2246 /* Tab-Bar-Icon---Results.png in Resources */,
@@ -715,6 +724,7 @@
 				2AD36D5B1912C4E400D71555 /* Reachability.m in Sources */,
 				2A0DACDC18A2F6DC00FF995D /* QuizTableViewController.m in Sources */,
 				2AB1DCF818A3F97A00E5E08B /* PastQuizViewController.m in Sources */,
+				75DEF26919783D2800AEEED6 /* InitialViewController.m in Sources */,
 				2AF37676189AF53C004423BA /* ImportViewController.m in Sources */,
 				2AD87A391897225B0069F479 /* AppDelegate.m in Sources */,
 				2AD87A351897225B0069F479 /* main.m in Sources */,
@@ -808,8 +818,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Zhi Hao Li (M6WK7U72AV)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Zhi Hao Li (M6WK7U72AV)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/bruce_li_94/Documents/apsciOSDev/QuizApp2,
@@ -820,8 +830,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QuizApp2/QuizApp2-Prefix.pch";
 				INFOPLIST_FILE = "QuizApp2/QuizApp2-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "SmarTEST Student";
-				PROVISIONING_PROFILE = "A13D73B8-A266-452D-9C3D-F72DB4E76808";
+				PROVISIONING_PROFILE = "52646744-7B8E-431F-82FD-E0F1F1544357";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Distribution;
@@ -925,8 +936,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Zhi Hao Li (LKP28C7D67)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Zhi Hao Li (LKP28C7D67)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/bruce_li_94/Documents/apsciOSDev/QuizApp2,
@@ -937,8 +948,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QuizApp2/QuizApp2-Prefix.pch";
 				INFOPLIST_FILE = "QuizApp2/QuizApp2-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "SmarTEST Student";
-				PROVISIONING_PROFILE = "A13D73B8-A266-452D-9C3D-F72DB4E76808";
+				PROVISIONING_PROFILE = "52646744-7B8E-431F-82FD-E0F1F1544357";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -948,8 +960,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Zhi Hao Li (M6WK7U72AV)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Zhi Hao Li (M6WK7U72AV)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/bruce_li_94/Documents/apsciOSDev/QuizApp2,
@@ -960,8 +972,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QuizApp2/QuizApp2-Prefix.pch";
 				INFOPLIST_FILE = "QuizApp2/QuizApp2-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "SmarTEST Student";
-				PROVISIONING_PROFILE = "A13D73B8-A266-452D-9C3D-F72DB4E76808";
+				PROVISIONING_PROFILE = "52646744-7B8E-431F-82FD-E0F1F1544357";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

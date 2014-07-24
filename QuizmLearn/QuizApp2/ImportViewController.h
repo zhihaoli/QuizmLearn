@@ -10,7 +10,7 @@
 #import "NSString+ParsingExtensions.h"
 #import <Parse/Parse.h>
 
-@interface ImportViewController : UIViewController <PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate>
+@interface ImportViewController : UIViewController <PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) NSArray *importedRows;
 @property (strong, nonatomic) NSArray * questions;

@@ -35,5 +35,6 @@
 @property (nonatomic) BOOL appQSubmitted;
 @property BOOL middleOfQuestion;
 
+
 @end
 

@@ -9,6 +9,8 @@
 #import "PastQuizViewController.h"
 #import <Parse/Parse.h>
 #import "Question.h"
+#import "MyLoginViewController.h"
+#import "InitialViewController.h"
 
 
 @interface PastQuizViewController ()
@@ -17,7 +19,9 @@
 
 @end
 
-@implementation PastQuizViewController
+@implementation PastQuizViewController{
+    BOOL loggedIn;
+}
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -32,6 +36,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    //[self setUpLogin];
+    
+    NSLog(@"view did load");
 
     UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
     
@@ -41,10 +49,18 @@
     
     self.refreshControl = refresh;
     
-    [self refresh];
+    //[self refresh];
 }
 
--(void)refresh {
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:YES];
+    NSLog(@"view will appear");
+    
+    
+     [self makeDetailViewTranslucent];
+}
+
+-(void)refreshTests {
     
     PFQuery *queryUser = [PFUser query];
     [queryUser whereKey:@"username" equalTo:[PFUser currentUser].username];
@@ -77,6 +93,7 @@
             [self.tableView reloadData];
         }
     }];
+    
     
     [self performSelector:@selector(stopRefresh) withObject:nil afterDelay:2.5];
     
@@ -129,18 +146,232 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"unwindToQuestion"]){
+    
+    NSArray *indexPaths = [self.tableView indexPathsForSelectedRows];
+    NSIndexPath *index = [indexPaths objectAtIndex:0];
+    if ([segue.identifier isEqualToString:@"goToQuestion"]){
         
-        NSIndexPath *index = [self.tableView indexPathForCell:sender];
+        QuestionViewController *destVC = (QuestionViewController *)[segue destinationViewController];
+        
+        UIViewController *realDetail = destVC;
+        
+        id mostRecentSubview = realDetail.view.subviews.lastObject;
+        
+        // If the last subview isnt a translucent view, make it one!
+        if (![mostRecentSubview isKindOfClass:[ILTranslucentView class]]){
+            CGRect screenRect = [[UIScreen mainScreen] bounds];
+            ILTranslucentView *translucentView = [[ILTranslucentView alloc] initWithFrame:screenRect];
+            
+            translucentView.translucentAlpha = 1;
+            
+            //Set the properties of the translucent view
+            //NOTE: to be deprecated by iOS 8 UIVisualEffects
+            translucentView.translucentStyle = UIBarStyleDefault;
+            translucentView.translucentTintColor = [UIColor clearColor];
+            translucentView.backgroundColor = [UIColor clearColor];
+            
+            realDetail.navigationItem.title = @"Loading Test";
+            UILabel *textLabel = [self setLoadingTextOfTranslucentView];
+            [translucentView addSubview:textLabel];
+            [realDetail.view addSubview:translucentView];
+            [UIView transitionWithView:realDetail.view duration:0.37 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+                
+            }completion:nil];
+        }
+
+        
+        
+        
         
         Quiz *quiz = [self.listPastQuizzes objectAtIndex:index.row];
         self.quizIdentifier = quiz.quizIdentifier;
         
-        QuestionViewController *destVC = (QuestionViewController *)[segue destinationViewController];
+
         destVC.listPastQuizzes = self.listPastQuizzes;
+        destVC.quizIdentifier = self.quizIdentifier;
+        
+         NSLog(@"quiz id for question segue is: %@", self.quizIdentifier);
 
     }
+    
+    if ([segue.identifier isEqualToString:@"goToQuiz"]){
+        NSIndexPath *index = [self.tableView indexPathForCell:sender];
+        Quiz *quiz = [self.listPastQuizzes objectAtIndex:index.row];
+        self.quizIdentifier = quiz.quizIdentifier;
+        QuizTableViewController *destVC = (QuizTableViewController *)[segue destinationViewController];
+        NSLog(@"quiz id for quiz segue is: %@", self.quizIdentifier);
+        destVC.quizIdentifier = self.quizIdentifier;
+
+        
+    }
 }
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    [self performSegueWithIdentifier:@"goToQuiz" sender:indexPath];
+    [self performSegueWithIdentifier:@"goToQuestion" sender:indexPath];
+}
+
+#pragma mark - Login/Logout Methods
+
+- (void)setUpLogin {
+    MyLoginViewController *logInViewController = [[MyLoginViewController alloc] init];
+    [logInViewController setDelegate:self]; // Set ourselves as the delegate
+    
+    logInViewController.fields = PFLogInFieldsUsernameAndPassword | PFLogInFieldsLogInButton;
+    
+    
+    //bring up the login screen
+    [self presentViewController:logInViewController animated:NO completion:NULL];
+}
+
+
+
+- (IBAction)logoutTapped:(id)sender {
+    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"Do you really want to sign out?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Yes", nil) otherButtonTitles:NSLocalizedString(@"Cancel",nil), nil] show];
+}
+
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    //If the user selects 'Yes' to signing out
+    if (buttonIndex == 0){
+        
+        [PFUser logOut];
+        [self setUpLogin];
+        
+    }
+}
+
+#pragma mark - PFLogInViewControllerDelegate
+
+// Sent to the delegate to determine whether the log in request should be submitted to the server.
+- (BOOL)logInViewController:(PFLogInViewController *)logInController shouldBeginLogInWithUsername:(NSString *)username password:(NSString *)password {
+    // Check if both fields are completed
+    if (username && password && username.length && password.length) {
+        return YES; // Begin login process
+    }
+    
+    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Missing Information", nil) message:NSLocalizedString(@"Make sure you fill out all of the information!", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+    return NO; // Interrupt login process
+}
+
+// Sent to the delegate when a PFUser is logged in.
+- (void)logInViewController:(PFLogInViewController *)logInController didLogInUser:(PFUser *)user {
+    NSLog(@"User logged in");
+    loggedIn = YES;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"LoggedIn" object:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+}
+
+// Sent to the delegate when the log in attempt fails.
+- (void)logInViewController:(PFLogInViewController *)logInController didFailToLogInWithError:(NSError *)error {
+    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Invalid login credentials!", nil) message:NSLocalizedString(@"Please check and re-enter your username and password", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"Will do", nil) otherButtonTitles:nil] show];
+    
+    NSLog(@"Failed to log in...");
+}
+
+// Sent to the delegate when the log in screen is dismissed.
+- (void)logInViewControllerDidCancelLogIn:(PFLogInViewController *)logInController {
+    NSLog(@"User dismissed the logInViewController");
+}
+
+#pragma mark - PFSignUpViewControllerDelegate
+
+// Sent to the delegate to determine whether the sign up request should be submitted to the server.
+- (BOOL)signUpViewController:(PFSignUpViewController *)signUpController shouldBeginSignUp:(NSDictionary *)info {
+    BOOL informationComplete = YES;
+    
+    // loop through all of the submitted data
+    for (id key in info) {
+        NSString *field = [info objectForKey:key];
+        if (!field || !field.length) { // check completion
+            informationComplete = NO;
+            break;
+        }
+    }
+    
+    // Display an alert if a field wasn't completed
+    if (!informationComplete) {
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Missing Information", nil) message:NSLocalizedString(@"Make sure you fill out all of the information!", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+    }
+    
+    return informationComplete;
+}
+
+
+#pragma mark - Detail View Methods
+
+-(id) getDetailViewController{
+    id detail = self.splitViewController.viewControllers[1];
+    if ([detail isKindOfClass:[UINavigationController class]]){
+        detail = [detail topViewController];
+    }
+    
+    return detail;
+}
+
+//set the translucency on the detail view
+- (void) makeDetailViewTranslucent{
+    
+    UIViewController *realDetail = [self getDetailViewController];
+    
+    id mostRecentSubview = realDetail.view.subviews.lastObject;
+    
+    // If the last subview isnt a translucent view, make it one!
+    if (![mostRecentSubview isKindOfClass:[ILTranslucentView class]]){
+        CGRect screenRect = [[UIScreen mainScreen] bounds];
+        ILTranslucentView *translucentView = [[ILTranslucentView alloc] initWithFrame:screenRect];
+        
+        //Make the logo on InitialView more visible by setting a lower alpha on it
+        if ([[self.splitViewController.viewControllers[1] topViewController] isKindOfClass:[InitialViewController class]]){
+            translucentView.translucentAlpha = 0.9;
+        }else{
+            translucentView.translucentAlpha = 1;
+            
+        }
+        
+        //Set the properties of the translucent view
+        //NOTE: to be deprecated by iOS 8 UIVisualEffects
+        translucentView.translucentStyle = UIBarStyleDefault;
+        translucentView.translucentTintColor = [UIColor clearColor];
+        translucentView.backgroundColor = [UIColor clearColor];
+        
+        realDetail.navigationItem.title = @"Welcome";
+        UILabel *textLabel = [self setTextOfTranslucentView];
+        [translucentView addSubview:textLabel];
+        [realDetail.view addSubview:translucentView];
+        [UIView transitionWithView:realDetail.view duration:0.37 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+            
+        }completion:nil];
+    }
+}
+
+//set the overlay text on top of the translucent view
+- (UILabel *) setTextOfTranslucentView{
+    
+    UILabel *textLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 80, 700, 100)];
+    textLabel.text = [NSString stringWithFormat:@"Welcome to SmarTEST Student!\n \n Get started by selecting a test from the left"];
+    [textLabel setBackgroundColor:[UIColor clearColor]];
+    [textLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:24]];
+    textLabel.numberOfLines = 3;
+    [textLabel setTextAlignment:NSTextAlignmentCenter];
+    textLabel.textColor = [UIColor blackColor];
+    return textLabel;
+    
+}
+
+- (UILabel *) setLoadingTextOfTranslucentView{
+    UILabel *textLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 80, 700, 100)];
+    textLabel.text = [NSString stringWithFormat:@"Good things come to those who wait...loading your test!"];
+    [textLabel setBackgroundColor:[UIColor clearColor]];
+    [textLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:24]];
+    textLabel.numberOfLines = 3;
+    [textLabel setTextAlignment:NSTextAlignmentCenter];
+    textLabel.textColor = [UIColor blackColor];
+    return textLabel;
+}
+
 
 
 @end

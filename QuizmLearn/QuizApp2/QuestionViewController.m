@@ -119,6 +119,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    groupName = [PFUser currentUser].username;
+    
+    [self.navigationItem setHidesBackButton:YES];
+    
+    
     [self testInternetConnection];
     [self.scrollView setScrollEnabled:YES];
     [self initializeTapGestures];
@@ -128,24 +133,10 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-    master = (QuizTableViewController *)[self.splitViewController.viewControllers[0] topViewController];
-    
-    // The first time the view loads, launch the login
-    if (!loggedIn){
-        [self presentLogin];
-        
-        // The second time the view loads, launch the welcome screen
-    } else if (!quizImported){
-        
-        [self performSelector:@selector(goToWelcomeMethod) withObject:nil afterDelay:0];
-        quizImported = YES;
-        
-        // The third time the view loads, display the first question!
-    } else if (!firstQuestionDisplayed){
-        self.progressView.tintColor = UIColorFromRGB(0x007AFF);
-        [self performSelector:@selector(viewDidLoadDelayedLoading) withObject:self afterDelay:0.4];
-    }
+   
 }
+
+
 
 
 - (void)goToWelcomeMethod{
@@ -156,6 +147,12 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    master = (QuizTableViewController *)[self.splitViewController.viewControllers[0] topViewController];
+     if (!firstQuestionDisplayed){
+         [self setUpTest];
+        self.progressView.tintColor = UIColorFromRGB(0x007AFF);
+        [self performSelector:@selector(viewDidLoadDelayedLoading) withObject:self afterDelay:0.4];
+    }
 }
 
 // Called from view did load to display first question
@@ -414,7 +411,7 @@
 // Called when a correct answer is pressed or anytime a report answer is chosen
 - (void)sendAttemptsToParse{
     if ([self.attempts count] == 0 || !self.attempts){  //if the attempts array hasnt been made
-        
+        NSLog(@"quiz id is: %@", self.quizIdentifier);
         [self assignQuizLengthFromMaster:master];
         
         //create the attempts array
@@ -429,6 +426,8 @@
             
             // This put your results array on parse!
             PFObject *resultArray = [PFObject objectWithClassName:[NSString stringWithFormat:@"%@_Results",self.quizIdentifier]];
+            
+            NSLog(@"self.attempts is: %@", self.attempts);
             
             resultArray [[NSString stringWithFormat:@"%@", groupName]] = self.attempts;
             
@@ -450,8 +449,27 @@
     
     [self.attempts replaceObjectAtIndex:[self.detailItem.questionNumber integerValue] withObject:messagestring];
     
+    
+    
+    //Add a counter so the instructor knows how many students completed the question
+    PFQuery *counterQuery = [PFQuery queryWithClassName:self.quizIdentifier];
+    [counterQuery whereKey:@"questionNumber" equalTo:self.detailItem.questionNumber];
+    PFObject *counterObj = [counterQuery getFirstObject];
+    
+    if (counterObj[@"completionCounter"] != nil){
+        int currentNum = [counterObj[@"completionCounter"] intValue];
+        currentNum++;
+        counterObj[@"completionCounter"] = [NSNumber numberWithInt:currentNum];
+    }else{
+        counterObj[@"completionCounter"] = @1;
+        
+    }
+    
+    [counterObj save];
+    
     PFQuery *query = [PFQuery queryWithClassName:[NSString stringWithFormat:@"%@_Results",self.quizIdentifier]];
     
+    NSLog(@"results array id: %@", resultsArrayID);
     // Retrieve the object by id
     [query getObjectInBackgroundWithId:[NSString stringWithFormat:@"%@",resultsArrayID] block:^(PFObject *resultArrayUpdate, NSError *error) {
         
@@ -711,11 +729,13 @@
             [self performSelectorInBackground:@selector(sendAttemptsToParse) withObject:nil];
             [self.detailItem insertObjectInButtonsPressed:@2 AtLetterSpot:sender.titleLabel.text];
             self.detailItem.middleOfQuestion = NO;
+            [master.navigationItem setHidesBackButton:NO];
             
         } else {
             [self.detailItem insertObjectInButtonsPressed:@1 AtLetterSpot:sender.titleLabel.text];
             self.attemptsLabel.text = [NSString stringWithFormat:@"Attempts Left: %ld", self.detailItem.numberOfAnswers - [self.detailItem.qAttempts integerValue]];
             self.detailItem.middleOfQuestion = YES;
+            [master.navigationItem setHidesBackButton:YES];
         }
         
     } else { // It is a report question
@@ -805,15 +825,8 @@
 # pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-    
-    if ([[segue destinationViewController] isKindOfClass:[ImportViewController class]])
-    {
-        if (groupName){ // Send the groupname to importview controller to display in the welcome label
-            ImportViewController *destView = [segue destinationViewController];
-            destView.groupName = groupName;
-        }
-        
-    } else if ([segue.identifier isEqualToString: @"goToBigButton"]){
+
+    if ([segue.identifier isEqualToString: @"goToBigButton"]){
         // Send the BigButton view the button that was assigned to the report question in buttonpressed
         BigButtonViewController *destViewC = [segue destinationViewController];
         
@@ -948,15 +961,8 @@
 }
 
 // Unwinds from pastquiz view controller when the user taps a quiz
-- (IBAction)unwindToQuestion:(UIStoryboardSegue *)segue {
-    PastQuizViewController *source = [segue sourceViewController];
-    
-    if (source.quizIdentifier != nil) {
-        self.quizIdentifier = source.quizIdentifier;
-    }
-    NSLog(@"The quiz identifier in question view is %@", self.quizIdentifier);
-    
-    
+- (void) setUpTest {
+
     startedQuiz = NO;
     
     id mostRecentSubview = master.view.subviews.lastObject;
@@ -1240,14 +1246,14 @@
 {
     barButtonItem.title = NSLocalizedString(@"See Test", @"See Test");
     [self.navigationItem setLeftBarButtonItem:barButtonItem animated:YES];
-    self.masterPopoverController = popoverController;
+    //self.masterPopoverController = popoverController;
 }
 
 - (void)splitViewController:(UISplitViewController *)splitController willShowViewController:(UIViewController *)viewController invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
 {
     // Called when the view is shown again in the split view, invalidating the button and popover controller.
     [self.navigationItem setLeftBarButtonItem:nil animated:YES];
-    self.masterPopoverController = nil;
+    //self.masterPopoverController = nil;
 }
 
 #pragma mark - PFLogInViewControllerDelegate

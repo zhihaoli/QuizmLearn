@@ -23,6 +23,8 @@ NSString *backgroundColour;
 UIColor *cfontColour;
 UIColor *cbackgroundColour;
 
+UITapGestureRecognizer *tapToDismiss;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -36,6 +38,9 @@ UIColor *cbackgroundColour;
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    
+    tapToDismiss = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(handleTapToDismiss:)];
+    [self.view addGestureRecognizer:tapToDismiss];
     
     isPortrait = UIDeviceOrientationIsPortrait(self.interfaceOrientation);
     isLandscape = UIDeviceOrientationIsLandscape(self.interfaceOrientation);
@@ -87,8 +92,9 @@ UIColor *cbackgroundColour;
 
 }
 
-- (IBAction)didTapImage:(UITapGestureRecognizer *)sender {
-    NSLog(@"Button was tapped");
+
+- (void) handleTapToDismiss: (UITapGestureRecognizer *)recognizer
+{
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

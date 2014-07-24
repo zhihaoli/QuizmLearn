@@ -11,9 +11,11 @@
 #import "ImportViewController.h"
 #import "Quiz.h"
 
-@interface PastQuizViewController : UITableViewController <UITableViewDelegate>
+@interface PastQuizViewController : UITableViewController <UITableViewDelegate, PFLogInViewControllerDelegate, UISplitViewControllerDelegate>
 
 @property (strong, nonatomic) NSString * quizIdentifier;
 @property (strong, nonatomic) NSMutableArray *listPastQuizzes;
+
+-(void)refreshTests;
 
 @end
