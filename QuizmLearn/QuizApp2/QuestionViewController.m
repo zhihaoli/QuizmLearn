@@ -990,13 +990,6 @@
 }
 
 
-- (IBAction)unwindFromBigButton:(UIStoryboardSegue *)segue {
-    
-    [self switchQuestion];
-    self.attemptsLabel.text = @"";
-    
-    self.questionClosedLabel.text = @"Question is complete";
-}
 
 
 #pragma mark - Formatting
@@ -1044,6 +1037,7 @@
     label.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
     [label addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:NULL];
     label.textAlignment = NSTextAlignmentCenter;
+   
     
 }
 

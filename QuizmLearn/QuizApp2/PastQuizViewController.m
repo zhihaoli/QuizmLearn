@@ -20,6 +20,7 @@
 @end
 
 @implementation PastQuizViewController{
+    BOOL loginProcess;
     BOOL loggedIn;
 }
 
@@ -40,16 +41,22 @@
     //[self setUpLogin];
     
     NSLog(@"view did load");
+    
+    UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc]initWithTitle:@"Logout" style:UIBarButtonItemStylePlain target:self action:@selector(logoutButtonTapped)];
+
+    
+    
+    self.navigationItem.leftBarButtonItem = logoutButton;
 
     UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
     
     refresh.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing Tests"];
     
-    [refresh addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+    [refresh addTarget:self action:@selector(refreshTests) forControlEvents:UIControlEventValueChanged];
     
     self.refreshControl = refresh;
     
-    //[self refresh];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -57,8 +64,27 @@
     NSLog(@"view will appear");
     
     
-     [self makeDetailViewTranslucent];
+    
+     //[self makeDetailViewTranslucent];
+    
+        if (!loggedIn && [PFUser currentUser].username == nil)
+        {
+            loginProcess = YES;
+            NSLog(@"initial view will appear");
+            [self setUpLogin];
+        } 
+    
+        //after you log in, check to see if this user is using an instructor account
+        if ((loggedIn && loginProcess) || [PFUser currentUser].username != nil) {
+            [self makeDetailViewTranslucent];
+            [self refreshTests];
+
+            loginProcess = NO;
+        }
 }
+
+
+
 
 -(void)refreshTests {
     
@@ -214,11 +240,19 @@
 #pragma mark - Login/Logout Methods
 
 - (void)setUpLogin {
+    
+    UIViewController *realDetail = [self getDetailViewController];
+    id mostRecentSubview = realDetail.view.subviews[[realDetail.view.subviews count]-1];
+    
+    if ([mostRecentSubview isKindOfClass:[ILTranslucentView class]]){
+        [[realDetail.view.subviews objectAtIndex:[realDetail.view.subviews count]-1]removeFromSuperview];
+    }
+    
     MyLoginViewController *logInViewController = [[MyLoginViewController alloc] init];
     [logInViewController setDelegate:self]; // Set ourselves as the delegate
     
     logInViewController.fields = PFLogInFieldsUsernameAndPassword | PFLogInFieldsLogInButton;
-    
+    loginProcess = YES;
     
     //bring up the login screen
     [self presentViewController:logInViewController animated:NO completion:NULL];
@@ -226,7 +260,8 @@
 
 
 
-- (IBAction)logoutTapped:(id)sender {
+-(void)logoutButtonTapped {
+
     [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"Do you really want to sign out?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Yes", nil) otherButtonTitles:NSLocalizedString(@"Cancel",nil), nil] show];
 }
 
@@ -259,7 +294,8 @@
 - (void)logInViewController:(PFLogInViewController *)logInController didLogInUser:(PFUser *)user {
     NSLog(@"User logged in");
     loggedIn = YES;
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"LoggedIn" object:nil];
+    
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"LoggedIn" object:nil];
     [self dismissViewControllerAnimated:YES completion:nil];
     
 }
@@ -350,11 +386,11 @@
 //set the overlay text on top of the translucent view
 - (UILabel *) setTextOfTranslucentView{
     
-    UILabel *textLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 80, 700, 100)];
-    textLabel.text = [NSString stringWithFormat:@"Welcome to SmarTEST Student!\n \n Get started by selecting a test from the left"];
+    UILabel *textLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 80, 700, 150)];
+    textLabel.text = [NSString stringWithFormat:@"Welcome to SmarTEST Student %@!\n \n Get started by selecting a test from the left\n \n Please remember to log out when you are done!", [PFUser currentUser].username];
     [textLabel setBackgroundColor:[UIColor clearColor]];
     [textLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:24]];
-    textLabel.numberOfLines = 3;
+    textLabel.numberOfLines = 5;
     [textLabel setTextAlignment:NSTextAlignmentCenter];
     textLabel.textColor = [UIColor blackColor];
     return textLabel;

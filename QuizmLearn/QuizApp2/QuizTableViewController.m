@@ -561,9 +561,40 @@
     
     if ([q.qtype isEqualToString:@"1"] && [q.questionRelease intValue] == 0){
         
-        
-        
         // If the last subview isnt a translucent view, make it one!
+        
+        if ([mostRecentSubview isKindOfClass:[ILTranslucentView class]] && [q.questionNumber integerValue] == 1){
+            [[realDetail.view.subviews objectAtIndex:[realDetail.view.subviews count]-1]removeFromSuperview];
+            
+            CGRect screenRect = [[UIScreen mainScreen] bounds];
+            ILTranslucentView *translucentView = [[ILTranslucentView alloc] initWithFrame:screenRect];
+            
+            translucentView.translucentAlpha = 1;
+            translucentView.translucentStyle = UIBarStyleDefault;
+            translucentView.translucentTintColor = [UIColor clearColor];
+            translucentView.backgroundColor = [UIColor clearColor];
+            
+            
+            CGRect rect = CGRectMake(370, 200, 700, 100);
+            
+            UILabel *textLabel = [[UILabel alloc]initWithFrame:rect];
+            
+            textLabel.center = realDetail.view.center;
+            textLabel.text = @"This Question has not been released by the instructor yet";
+            
+            [textLabel setBackgroundColor:[UIColor clearColor]];
+            [textLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:24]];
+            textLabel.numberOfLines = 3;
+            [textLabel setTextAlignment:NSTextAlignmentCenter];
+            textLabel.textColor = [UIColor blackColor];
+            [translucentView addSubview:textLabel];
+            [realDetail.view addSubview:translucentView];
+            [UIView transitionWithView:realDetail.view duration:0.37 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+                
+            }completion:nil];
+
+            
+        }
         
         if (![mostRecentSubview isKindOfClass:[ILTranslucentView class]]){
             CGRect screenRect = [[UIScreen mainScreen] bounds];

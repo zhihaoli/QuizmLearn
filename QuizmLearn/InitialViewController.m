@@ -13,6 +13,8 @@
 
 @interface InitialViewController ()
 
+@property (strong, nonatomic) UIPopoverController *masterPopoverController;
+
 @end
 
 @implementation InitialViewController{
@@ -22,8 +24,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     NSLog(@"initial view did load");
+    
+    
+
     // Do any additional setup after loading the view.
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -31,83 +37,103 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-    //if you are not logged in, login; otherwise if device is in portrait, set up the appropriate splitview delegates
-    if (!loggedIn)
-    {
-        NSLog(@"initial view will appear");
-        [self login];
-    } else if (UIDeviceOrientationIsPortrait(self.interfaceOrientation))
-    {
-        [self.navigationItem.leftBarButtonItem.target performSelector:self.navigationItem.leftBarButtonItem.action withObject:self.navigationItem afterDelay:0.1];
+    
+    NSLog(@"this is happening");
+    
+    
+    if (!loggedIn && [PFUser currentUser].username == nil && UIDeviceOrientationIsPortrait(self.interfaceOrientation)){
+        [self setUpLogin];
     }
     
-    //after you log in, check to see if this user is using an instructor account
-    if (loggedIn) {
+    
+    if (loggedIn || [PFUser currentUser].username != nil){
+        //[self.navigationItem.leftBarButtonItem.target performSelector:self.navigationItem.leftBarButtonItem.action withObject:self.navigationItem afterDelay:0.1];
+        [self makeDetailViewTranslucent];
         PastQuizViewController *master = (PastQuizViewController *)[self.splitViewController.viewControllers[0] topViewController];
         [master refreshTests];
-  
         
     }
     
+    //if you are not logged in, login; otherwise if device is in portrait, set up the appropriate splitview delegates
+ 
+    //if (notLoggedIn && UIDeviceOrientationIsPortrait(UIInterfaceOrientation))
+    
+    
     //set up your delegates for split views
-    if (self.splitViewController.delegate == nil)
-    {
-        [self.splitViewController setDelegate:self];
+//    if (self.splitViewController.delegate == nil)
+//    {
+//        [self.splitViewController setDelegate:self];
+//    }
+}
+
+//set the overlay text on top of the translucent view
+- (UILabel *) setTextOfTranslucentView{
+    
+    UILabel *textLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 80, 700, 150)];
+    textLabel.text = [NSString stringWithFormat:@"Welcome to SmarTEST Student %@!\n \n Get started by selecting a test from the left\n \nPlease remember to go log out when you are done!", [PFUser currentUser].username];
+    [textLabel setBackgroundColor:[UIColor clearColor]];
+    [textLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:24]];
+    textLabel.numberOfLines = 5;
+    [textLabel setTextAlignment:NSTextAlignmentCenter];
+    textLabel.textColor = [UIColor blackColor];
+    return textLabel;
+    
+}
+
+//set the translucency on the detail view
+- (void) makeDetailViewTranslucent{
+
+    id mostRecentSubview = self.view.subviews.lastObject;
+    
+    // If the last subview isnt a translucent view, make it one!
+    if (![mostRecentSubview isKindOfClass:[ILTranslucentView class]]){
+        CGRect screenRect = [[UIScreen mainScreen] bounds];
+        ILTranslucentView *translucentView = [[ILTranslucentView alloc] initWithFrame:screenRect];
+        
+        //Make the logo on InitialView more visible by setting a lower alpha on it
+        if ([[self.splitViewController.viewControllers[1] topViewController] isKindOfClass:[InitialViewController class]]){
+            translucentView.translucentAlpha = 0.9;
+        }else{
+            translucentView.translucentAlpha = 1;
+            
+        }
+        
+        //Set the properties of the translucent view
+        //NOTE: to be deprecated by iOS 8 UIVisualEffects
+        translucentView.translucentStyle = UIBarStyleDefault;
+        translucentView.translucentTintColor = [UIColor clearColor];
+        translucentView.backgroundColor = [UIColor clearColor];
+        
+        self.navigationItem.title = @"Welcome";
+        UILabel *textLabel = [self setTextOfTranslucentView];
+        [translucentView addSubview:textLabel];
+        [self.view addSubview:translucentView];
+        [UIView transitionWithView:self.view duration:0.37 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+            
+        }completion:nil];
     }
 }
 
 
-
 - (void)viewWillDisappear:(BOOL)animated
 {
-    self.splitViewController.delegate = nil;
+    //self.splitViewController.delegate = nil;
 }
 
 //more split view delegate stuff during rotation
 - (void) willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     
-    if (toInterfaceOrientation == UIDeviceOrientationPortrait) {
-        if ([self.splitViewController.viewControllers[0] conformsToProtocol:@protocol(UISplitViewControllerDelegate)]) {
-            self.splitViewController.delegate = self.splitViewController.viewControllers[0];
-        }
-        else {
-            self.splitViewController.delegate = nil;
-        }
-    }
 }
 
-
-- (void)login{
-    // Create the log in view controller
-    NSLog(@"initial presents login");
+- (void)setUpLogin {
     MyLoginViewController *logInViewController = [[MyLoginViewController alloc] init];
     [logInViewController setDelegate:self]; // Set ourselves as the delegate
     
     logInViewController.fields = PFLogInFieldsUsernameAndPassword | PFLogInFieldsLogInButton;
-
     
+    //bring up the login screen
     [self presentViewController:logInViewController animated:NO completion:NULL];
 }
-
-
-- (void) logout {
-    
-    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"Do you really want to sign out?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Yes", nil) otherButtonTitles:NSLocalizedString(@"Cancel",nil), nil] show];
-    
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-    
-    //if user presses 'Yes' to log out
-    if (buttonIndex == 0){
-        [PFUser logOut];
-        
-        loggedIn = NO;
-        
-        [self login];
-    }
-}
-
 
 #pragma mark - PFLogInViewControllerDelegate
 
@@ -126,7 +152,7 @@
 - (void)logInViewController:(PFLogInViewController *)logInController didLogInUser:(PFUser *)user {
     NSLog(@"User logged in");
     loggedIn = YES;
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"LoggedIn" object:nil];
+    //    [[NSNotificationCenter defaultCenter] postNotificationName:@"LoggedIn" object:nil];
     [self dismissViewControllerAnimated:YES completion:nil];
     
 }
@@ -143,57 +169,7 @@
     NSLog(@"User dismissed the logInViewController");
 }
 
-#pragma mark - PFSignUpViewControllerDelegate
 
-// Sent to the delegate to determine whether the sign up request should be submitted to the server.
-- (BOOL)signUpViewController:(PFSignUpViewController *)signUpController shouldBeginSignUp:(NSDictionary *)info {
-    BOOL informationComplete = YES;
-    
-    // loop through all of the submitted data
-    for (id key in info) {
-        NSString *field = [info objectForKey:key];
-        if (!field || !field.length) { // check completion
-            informationComplete = NO;
-            break;
-        }
-    }
-    
-    // Display an alert if a field wasn't completed
-    if (!informationComplete) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Missing Information", nil) message:NSLocalizedString(@"Make sure you fill out all of the information!", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
-    }
-    
-    return informationComplete;
-}
-
-// Sent to the delegate when a PFUser is signed up.
-- (void)signUpViewController:(PFSignUpViewController *)signUpController didSignUpUser:(PFUser *)user {
-    
-    PFQuery *queryInstructor = [PFUser query];
-    [queryInstructor whereKey:@"username" equalTo:[PFUser currentUser].username];
-    PFObject *instructor = [queryInstructor getFirstObject];
-    instructor[@"isInstructor"] = @"YES";
-    [instructor save];
-    loggedIn = YES;
-    
-    [self dismissViewControllerAnimated:YES completion:^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"LoggedIn" object:nil];
-        //launch the tutorial
-        [self performSegueWithIdentifier:@"firstTimeTutorial" sender:self];
-    }];
-    
-}
-
-// Sent to the delegate when the sign up attempt fails.
-- (void)signUpViewController:(PFSignUpViewController *)signUpController didFailToSignUpWithError:(NSError *)error {
-    NSLog(@"Failed to sign up...");
-}
-
-// Sent to the delegate when the sign up screen is dismissed.
-- (void)signUpViewControllerDidCancelSignUp:(PFSignUpViewController *)signUpController {
-    NSLog(@"User dismissed the signUpViewController");
-    
-}
 
 #pragma mark - Split view
 
@@ -201,14 +177,14 @@
 {
     barButtonItem.title = NSLocalizedString(@"Avaliable Tests", @"Avaliable Tests");
     [self.navigationItem setLeftBarButtonItem:barButtonItem animated:YES];
-    //self.masterPopoverController = popoverController;
+    self.masterPopoverController = popoverController;
 }
 
 - (void)splitViewController:(UISplitViewController *)splitController willShowViewController:(UIViewController *)viewController invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
 {
     // Called when the view is shown again in the split view, invalidating the button and popover controller.
     [self.navigationItem setLeftBarButtonItem:nil animated:YES];
-    //self.masterPopoverController = nil;
+    self.masterPopoverController = nil;
 }
 
 /*
